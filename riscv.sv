@@ -5,7 +5,7 @@ late so this isn't compatable with the rest of the processor
 -- it's just using a lot of place holders. 
 */
 
-module top(input logic clk, reset);
+module riscv(input logic clk, reset);
 
 
     // Data memory 
