@@ -1,11 +1,11 @@
 module SrcB_mux(
     input logic [31:0] RD2, ImmExt,
     input logic ALUSrc,
-    output logic [31:0] SrcB
+    output logic [31:0] SrcB,
 );
 
 always_ff @(posedge clk) begin
-    y = ALUSrc ? RD2 : ImmExt;
+    SrcB = ALUSrc ? RD2 : ImmExt;
 end
 
 endmodule
