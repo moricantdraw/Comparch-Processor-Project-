@@ -7,15 +7,31 @@ module ALU (
     output logic [31:0] ALUResult
 );
 
-// depending on 
-always_ff @(psedge clk) begin
+always_comb begin
+    Zero = 0;
+
     case (ALUControl)
-        3'b000: ALUResult = SrcA + SrcB;
-        3'b001: ALUResult = SrcA - SrcBl
-        3'b011: ALUResult = SrcA | SrcB; // or
-        3'b010: ALUResult = SrcA & SrcB; // and
-        3'b101: ALUResult = (SrcA + SrcB)[31]; // slt (set less than) -- are we using two's complement?
-        default: ALUResult = 32'bx;
+        3'b000: begin
+            ALUResult = SrcA + SrcB;
+        end 
+        3'b001: begin
+            ALUResult = SrcA - SrcB;
+            if (ALUResult == 0) begin
+                Zero = 1;
+            end
+        end
+        3'b011: begin 
+            ALUResult = SrcA | SrcB; // or
+        end
+        3'b010: begin 
+            ALUResult = SrcA & SrcB; // and
+        end
+        3'b101: begin
+            ALUResult = (SrcA + SrcB)[31]; // slt (set less than) -- check two's complement?
+        end
+        default: begin
+            ALUResult = 32'bx;
+        end
     endcase
 end
 endmodule
