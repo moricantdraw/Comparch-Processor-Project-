@@ -1,24 +1,21 @@
 module register (
     input logic     clk,
-    input logic     [4:0] A1,
-    input logic     [4:0] A2,
-    input logic     [4:0] A3,
-    input logic     WE3,
-    input logic     [31:0] WD3,
-    output logic    [31:0] RD1,
-    output logic    [31:0] RD2
+    input logic     [5:0] a1, a2, a3,
+    input logic     we3,
+    input logic     [31:0] wd3,
+    output logic    [31:0] rd1, rd2
 );
 
     logic [31:0] registers [31:0];
 
     // Write port
     always_ff @(posedge clk) begin
-        RD1 <= registers[A1];
-        RD2 <= registers[A2];
-
-        if (WE3) begin
-            registers[A3] <= WD3;
+        if (we3) begin
+            registers[a3] <= wd3;
         end
     end
+
+    assign rd1 = (a1 != 0) ? rf[a1] : 0;
+    assign rd2 = (a2 != 0) ? rf[a2] : 0;
 
 endmodule
