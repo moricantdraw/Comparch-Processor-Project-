@@ -65,7 +65,7 @@ module dataPath (
 
     // ALU 
     alu alu_unit (
-        .a(RD1),
+        .a(rd1),
         .b(SrcB),
         .aluControl(ALUControl),
         .result(ALUResult),
