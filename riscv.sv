@@ -1,104 +1,84 @@
-/*
+module dataPath (
+    input  logic        clk, reset,
+    input  logic [2:0]  ImmSrc,
+    input  logic [3:0]  ALUControl,
+    input  logic [1:0]  ResultSrc,
+    input  logic        ALUSrc,
+    input  logic        PCSrc,
+    input  logic        RegWrite,
+    input  logic [31:0] ReadData,
 
-The updates are that I didn't pull until quite 
-late so this isn't compatable with the rest of the processor 
--- it's just using a lot of place holders. 
-*/
+    output logic [31:0] pc,         // Instruction address (to instruction memory)
+    output logic [31:0] ALUResult,  // Memory address (to data memory)
+    output logic [31:0] WriteData,  // Data to write to memory
+    output logic [31:0] instr       // Fetched instruction
+);
 
-module riscv(input logic clk, reset);
+    //Internal Signals 
+    logic [31:0] ImmExt;
+    logic [31:0] PCNext, PCPlus4, PCTarget;
+    logic [31:0] rd1, rd2, SrcB;
+    logic [31:0] Result;
 
+    // Program Counter
+    flopr #(32) pcReg (
+        .clk(clk), .reset(reset), .d(PCNext), .q(pc)
+    );
 
-    // Data memory 
-    logic [31:0] WriteData, DataAdr, ReadData;
+    adder pc_adder (
+        .a(pc), .b(32'd4), .y(PCPlus4)
+    );
 
-    // Instruction and control 
-    logic [31:0] instr;
+    adder branch_adder (
+        .a(pc), .b(ImmExt), .y(PCTarget)
+    );
 
-    logic        PCSrc;
-    logic [1:0]  ResultSrc;
-    logic        MemWrite;
-    logic [2:0]  ALUControl;
-    logic        ALUSrc;
-    logic [1:0]  ImmSrc;
-    logic        RegWrite;
+    // Select next PC based on PCSrc
+    assign PCNext = PCSrc ? PCTarget : PCPlus4;
 
-    // referncing the control unit 
-    control_unit cu(
+    // Instruction to Memory  
+    assign instr = ReadData;
+
+    // Register File 
+    regFile rf (
         .clk(clk),
-        .reset(reset),
-        .op(instr[6:0]),
-        .funct3(instr[14:12]),
-        .funct7(instr[31:25]),
-        .PCSrc(PCSrc),
-        .ResultSrc(ResultSrc),
-        .MemWrite(MemWrite),
-        .ALUControl(ALUControl),
-        .ALUSrc(ALUSrc),
+        .we3(RegWrite),
+        .a1(instr[19:15]),   // rs1
+        .a2(instr[24:20]),   // rs2
+        .a3(instr[11:7]),    // rd
+        .wd3(Result),        // data to write back
+        .rd1(rd1),
+        .rd2(rd2)
+    );
+
+    assign WriteData = rd2;
+
+    // Immediate Generator 
+    extend ext (
+        .instr(instr[31:7]),
         .ImmSrc(ImmSrc),
-        .RegWrite(RegWrite)
+        .ImmExt(ImmExt)
     );
 
-    /*Datapath 
-    I think that the best way to do this is to just shove 
-    the entire data path in here. This isn't in the right order yet 
-    because I was refercing some australians online. 
-    */
-    dataPath dp(
-        input logic clk, reset,
-					  input logic [2:0] ImmSrc, 
-					  input logic [3:0] ALUControl, 
-					  input logic [1:0] ResultSrc, 
-					  input logic IRWrite,
-					  input logic RegWrite,
-					  input logic [1:0] ALUSrcA, ALUSrcB, 
-					  input logic AdrSrc, 
-					  input logic PCWrite,  
-					  input logic [31:0] ReadData,
-					  output logic Zero, cout, overflow, sign, 
-					  output logic [31:0] Adr, 
-					  output logic [31:0] WriteData,
-					  output logic [31:0] instr);
+    // ALU Input Selection 
+    assign SrcB = ALUSrc ? ImmExt : rd2;
 
-		 
-logic [31:0] Result , ALUOut, ALUResult;
-logic [31:0] RD1, RD2, A , SrcA, SrcB, Data;
-logic [31:0] ImmExt;
-logic [31:0] PC, OldPC;
-
-
-//pc
-flopenr #(32) pcFlop(clk, reset, PCWrite, Result, PC);
-
-
-//regFile
-regFile rf(clk, RegWrite, instr[19:15], instr[24:20], instr[11:7], Result, RD1, RD2); 
-extend ext(instr[31:7], ImmSrc, ImmExt);
-flopr #(32) regF( clk, reset, RD1, A);
-flopr #(32) regF_2( clk, reset, RD2, WriteData);
-
-
-//alu
-mux3 #(32) srcAmux(PC, OldPC, A, ALUSrcA, SrcA);
-mux3 #(32) srcBmux(WriteData, ImmExt, 32'd4, ALUSrcB, SrcB);
-alu alu(SrcA, SrcB, ALUControl, ALUResult, Zero, cout, overflow, sign);
-flopr #(32) aluReg (clk, reset, ALUResult, ALUOut);
-mux4 #(32) resultMux(ALUOut, Data, ALUResult, ImmExt, ResultSrc, Result );
-
-//mem
-mux2 #(32) adrMux(PC, Result, AdrSrc, Adr);
-flopenr #(32) memFlop1(clk, reset, IRWrite, PC, OldPC); 
-flopenr #(32) memFlop2(clk, reset, IRWrite, ReadData, instr);
-flopr #(32) memDataFlop(clk, reset, ReadData, Data);
-
-
-/* do we need anything for the memory 
-    // === Memory (both instruction + data) ===
-    memory mem(
-        .clk(clk),
-        .we(MemWrite),
-        .a(DataAdr),
-        .wd(WriteData),
-        .rd(ReadData)
+    // ALU 
+    alu alu_unit (
+        .a(rd1),
+        .b(SrcB),
+        .aluControl(ALUControl),
+        .result(ALUResult),
     );
-*/
+
+    // Result Mux
+    always_comb begin
+        case (ResultSrc)
+            2'b00: Result = ALUResult;
+            2'b01: Result = ReadData;
+            2'b10: Result = ImmExt;
+            default: Result = 32'bx;
+        endcase
+    end
+
 endmodule
