@@ -9,7 +9,7 @@ module top(
 );
     logic [31:0] PC, Instr, ReadData
 
-    riscv rvsingle(clk, reset);
+    riscv rv_multi(clk, reset);
     memory mem(.clk(clk), .write_mem(write_mem), .write_data(write_data), .read_address(read_address) )
 endmodule
 

@@ -1,84 +1,54 @@
-module dataPath (
-    input  logic        clk, reset,
-    input  logic [2:0]  ImmSrc,
-    input  logic [3:0]  ALUControl,
-    input  logic [1:0]  ResultSrc,
-    input  logic        ALUSrc,
-    input  logic        PCSrc,
-    input  logic        RegWrite,
-    input  logic [31:0] ReadData,
-
-    output logic [31:0] pc,         // Instruction address (to instruction memory)
-    output logic [31:0] ALUResult,  // Memory address (to data memory)
-    output logic [31:0] WriteData,  // Data to write to memory
-    output logic [31:0] instr       // Fetched instruction
+module riscv(
+    input logic     clk,
+    input logic     [31:0] ReadData,
+    output logic    [31:0] Address,
+    output logic    MemWrite,
+    output logic    [31:0] WriteData
 );
+    // Control Unit IO
+    // input logic     [6:0] op, -- from Instr
+    // input logic     [2:0] funct3, -- from Instr
+    // input logic     funct7, -- from Instr
+    // input logic     Zero,
+    // output logic    PCSrc,
+    // output logic    [1:0]ResultSrc,
+    // output logic    MemWrite,
+    // output logic    [2:0]ALUControl,
+    // output logic    ALUSrc,
+    // output logic    [1:0]ImmSrc,
+    // output logic    RegWrite
 
-    //Internal Signals 
-    logic [31:0] ImmExt;
-    logic [31:0] PCNext, PCPlus4, PCTarget;
-    logic [31:0] rd1, rd2, SrcB;
-    logic [31:0] Result;
+    // Datapath IO
+    // input  logic        clk, reset,
+    // input  logic [2:0]  ImmSrc,
+    // input  logic [3:0]  ALUControl,
+    // input  logic [1:0]  ResultSrc,
+    // input  logic        ALUSrc,
+    // input  logic        PCSrc,
+    // input  logic        RegWrite,
+    // input  logic [31:0] ReadData,
+    // output logic [31:0] pc,         // Instruction address (to instruction memory)
+    // output logic [31:0] ALUResult,  // Memory address (to data memory)
+    // output logic [31:0] WriteData,  // Data to write to memory
+    // output logic [31:0] instr
 
-    // Program Counter
-    flopr #(32) pcReg (
-        .clk(clk), .reset(reset), .d(PCNext), .q(pc)
-    );
+    logic [1:0] ResultSrc, ImmSrc;
+    logic [1:0] ALUSrcA, ALUSrcB;
+    logic AdrSrc;
+    logic Zero;
+    logic [2:0] ALUControl;
+    logic IRWrite, PCWrite;
+    logic RegWrite;
+    logic [31:0] Instr;
 
-    adder pc_adder (
-        .a(pc), .b(32'd4), .y(PCPlus4)
-    );
+    logic opcode = Instr[6:0];
+    logic funct3 = Instr[12:14];
+    logic funct7 = Instr[30];
+    
+    // control unit IO
+    control_unit controller(clk, opcode, funct3, funct7, Zero,
+    ImmSrc, ALUSrcA, ALUSrcB, ResultSrc, AdrSrc, ALUControl, IRWrite, PCWrite, RegWrite, MemWrite);
 
-    adder branch_adder (
-        .a(pc), .b(ImmExt), .y(PCTarget)
-    );
-
-    // Select next PC based on PCSrc
-    assign PCNext = PCSrc ? PCTarget : PCPlus4;
-
-    // Instruction to Memory  
-    assign instr = ReadData;
-
-    // Register File 
-    regFile rf (
-        .clk(clk),
-        .we3(RegWrite),
-        .a1(instr[19:15]),   // rs1
-        .a2(instr[24:20]),   // rs2
-        .a3(instr[11:7]),    // rd
-        .wd3(Result),        // data to write back
-        .rd1(rd1),
-        .rd2(rd2)
-    );
-
-    assign WriteData = rd2;
-
-    // Immediate Generator 
-    extend ext (
-        .instr(instr[31:7]),
-        .ImmSrc(ImmSrc),
-        .ImmExt(ImmExt)
-    );
-
-    // ALU Input Selection 
-    assign SrcB = ALUSrc ? ImmExt : rd2;
-
-    // ALU 
-    alu alu_unit (
-        .a(rd1),
-        .b(SrcB),
-        .aluControl(ALUControl),
-        .result(ALUResult),
-    );
-
-    // Result Mux
-    always_comb begin
-        case (ResultSrc)
-            2'b00: Result = ALUResult;
-            2'b01: Result = ReadData;
-            2'b10: Result = ImmExt;
-            default: Result = 32'bx;
-        endcase
-    end
-
+    // fill in datapasth IO
+    datapath dp();
 endmodule
