@@ -1,17 +1,21 @@
 module dataPath (
-    input  logic        clk, reset,
-    input  logic [2:0]  ImmSrc,
-    input  logic [3:0]  ALUControl,
-    input  logic [1:0]  ResultSrc,
-    input  logic        ALUSrc,
-    input  logic        PCSrc,
-    input  logic        RegWrite,
-    input  logic [31:0] ReadData,
+    input logic     clk,
+    input logic     PCWrite,
+    input logic     AdrSrc,
+    // input logic     MemWrite, don't need cuz goes to memory module
+    input logic     IRWrite,
+    input logic     [1:0] ResultSrc,
+    input logic     [3:0] ALUControl,
+    input logic     [1:0] ALUSrcA, ALUSrcB,
+    input logic     [2:0] ImmSrc,
+    input logic     RegWrite,
+    input logic     [31:0] ReadData, // from memory module
 
-    output logic [31:0] pc,         // Instruction address (to instruction memory)
-    output logic [31:0] ALUResult,  // Memory address (to data memory)
-    output logic [31:0] WriteData,  // Data to write to memory
-    output logic [31:0] instr       // Fetched instruction
+    output logic    Zero, 
+    output logic    [31:0] Adr,        // Instruction address (to instruction memory)
+    output logic    [31:0] WriteData,  // Data from reg file (to memory)
+    output logic    [31:0] Instr     // Fetched instruction from intermediate register (to control unit)
+    // output logic    [31:0] ALUResult,  // Memory address (to data memory) 
 );
 
     //Internal Signals 
@@ -26,11 +30,11 @@ module dataPath (
     );
 
     adder pc_adder (
-        .a(pc), .b(32'd4), .y(PCPlus4)
+        .a(PC), .b(32'd4), .y(PCPlus4)
     );
 
     adder branch_adder (
-        .a(pc), .b(ImmExt), .y(PCTarget)
+        .a(PC), .b(ImmExt), .y(PCTarget)
     );
 
     // Select next PC based on PCSrc

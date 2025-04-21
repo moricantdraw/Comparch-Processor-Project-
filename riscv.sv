@@ -1,9 +1,9 @@
 module riscv(
     input logic     clk,
-    input logic     [31:0] ReadData,
-    output logic    [31:0] Address,
-    output logic    MemWrite,
-    output logic    [31:0] WriteData
+    input logic     [31:0] ReadData, // from memory module
+    output logic    [31:0] Adr, // to memory module
+    output logic    MemWrite, // to memory module
+    output logic    [31:0] WriteData // to memory module
 );
     // Control Unit IO
     // input logic     [6:0] op, -- from Instr
@@ -46,8 +46,9 @@ module riscv(
     logic funct7 = Instr[30];
     
     // control unit IO
-    control_unit controller(clk, opcode, funct3, funct7, Zero,
-    ImmSrc, ALUSrcA, ALUSrcB, ResultSrc, AdrSrc, ALUControl, IRWrite, PCWrite, RegWrite, MemWrite);
+    control_unit controller(.clk(clk), .op(opcode), .funct3(funct3), .funct7(funct7), .Zero(Zero), .PCWrite(PCWrite), .AdrSrc(AdrSrc),
+    .MemWrite(MemWrite), .IRWrite(IRWrite), .ResultSrc(ResultSrc), .ALUControl(ALUControl), .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), 
+    .RegWrite(RegWrite));
 
     // fill in datapasth IO
     datapath dp();
