@@ -1,6 +1,6 @@
 module mux_SrcA(
-    input logic     PC,
-    input logic     OldPC,
+    input logic     [31:0] PC,
+    input logic     [31:0] OldPC,
     input logic     A,
     input logic     [1:0] ALUSrcA,
     output logic    [1:0] SrcA
