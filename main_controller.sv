@@ -74,6 +74,4 @@ module control_unit(
     |  pcupdate;                    // always update if pcupdate is high
 
 	
-	
-	
 endmodule 

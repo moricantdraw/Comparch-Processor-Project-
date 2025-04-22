@@ -1,32 +1,35 @@
 module ALU (
-    input logic clk,
-    input logic [31:0] SrcA,
-    input logic [31:0] SrcB,
-    input logic [2:0] ALUControl,
-    output logic Zero,
-    output logic [31:0] ALUResult
+    input logic     [31:0] SrcA,
+    input logic     [31:0] SrcB,
+    input logic     [3:0] ALUControl,
+    output logic    [31:0] ALUResult,
+    output logic    Zero,
+    output logic    CarryOut,
+    output logic    Overflow,
+    output logic    Sign
 );
 
 always_comb begin
     Zero = 0;
+    CarryOut = 0;
 
     case (ALUControl)
-        3'b000: begin
-            ALUResult = SrcA + SrcB;
+        4'b0000: begin // addition
+            {CarryOut, ALUResult} = {1'b0, SrcA} + {1'b0, SrcB};
         end 
-        3'b001: begin
+        4'b0001: begin // subtraction
             ALUResult = SrcA - SrcB;
             if (ALUResult == 0) begin
                 Zero = 1;
             end
         end
-        3'b011: begin 
+        4'b0011: begin 
             ALUResult = SrcA | SrcB; // or
         end
-        3'b010: begin 
+        4'b0010: begin 
             ALUResult = SrcA & SrcB; // and
         end
-        3'b101: begin
+        4'b0101: begin
             ALUResult = (SrcA + SrcB)[31]; // slt (set less than) -- check two's complement?
         end
         default: begin

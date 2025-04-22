@@ -1,4 +1,5 @@
-module na_reg_Data(
+module nareg_Data(
+    input logic     clk,
     input logic     [31:0] ReadData,
     output logic    [31:0] Data
 );

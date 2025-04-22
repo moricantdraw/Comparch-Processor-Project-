@@ -1,9 +1,13 @@
+`include "main_controller.sv"
+`include "datapath.sv"
+
 module riscv(
     input logic     clk,
     input logic     [31:0] ReadData, // from memory module
     output logic    [31:0] Adr, // to memory module
     output logic    MemWrite, // to memory module
     output logic    [31:0] WriteData // to memory module
+    output logic    [2:0] funct3 // to memory module
 );
     // Control Unit IO
     // input logic     [6:0] op, -- from Instr
@@ -35,21 +39,24 @@ module riscv(
     logic [1:0] ResultSrc, ImmSrc;
     logic [1:0] ALUSrcA, ALUSrcB;
     logic AdrSrc;
-    logic Zero;
+    logic Zero, CarryOut, Overflow, Sign;
     logic [2:0] ALUControl;
     logic IRWrite, PCWrite;
     logic RegWrite;
     logic [31:0] Instr;
 
     logic opcode = Instr[6:0];
-    logic funct3 = Instr[12:14];
+    assign funct3 = Instr[14:12]; // janky specific case of output cuz of memory module
     logic funct7 = Instr[30];
     
     // control unit IO
-    control_unit controller(.clk(clk), .op(opcode), .funct3(funct3), .funct7(funct7), .Zero(Zero), .PCWrite(PCWrite), .AdrSrc(AdrSrc),
-    .MemWrite(MemWrite), .IRWrite(IRWrite), .ResultSrc(ResultSrc), .ALUControl(ALUControl), .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), 
-    .RegWrite(RegWrite));
+    controller control_unit(.clk(clk), .op(opcode), .funct3(funct3), .funct7(funct7), .Zero(Zero), .PCWrite(PCWrite),
+    .AdrSrc(AdrSrc), .MemWrite(MemWrite), .IRWrite(IRWrite), .ResultSrc(ResultSrc), .ALUControl(ALUControl),
+    .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), .RegWrite(RegWrite));
 
     // fill in datapasth IO
-    datapath dp();
+    datapath dp(.clk(clk), .PCWrite(PCWrite), .AdrSrc(AdrSrc), .IRWrite(IRWrite), .ResultSrc(ResultSrc),
+    .ALUControl(ALUControl), .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), .RegWrite(RegWrite),
+    .ReadData(ReadData), .Zero(Zero), .CarryOut(CarryOut), .Overflow(Overflow), .Sign(Sign), .Adr(Adr),
+    .WriteData(WriteData), .Instr(Instr));
 endmodule

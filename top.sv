@@ -2,57 +2,24 @@
 `include "memory.sv"
 
 module top(
-    input logic clk, reset,
-    output logic [31:0] write_data, read_address,
-    output logic write_mem
-    
-);
-    logic [31:0] PC, Instr, ReadData
-
-    riscv rv_multi(clk, reset);
-    memory mem(.clk(clk), .write_mem(write_mem), .write_data(write_data), .read_address(read_address) )
-endmodule
-
-
-/*
-module top(
-    input logic clk, reset,
-    output logic [31:0] WriteData, DataAdr,
+    input logic clk, 
+    output logic [31:0] WriteData, Adr,
     output logic MemWrite
-); 
     
-    logic [31:0] PC, Instr, ReadData
-// instantiate processor and memories
-
-    riscvsingle rvsingle(clk, reset, PC, Instr, MemWrite,
-    DataAdr, WriteData, ReadData);
-
-    imem imem(PC, Instr);
-
-    dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
-endmodule
-
-
-module imem(
-    input logic [31:0] a, 
-    output logic [31:0] rd
 );
-    logic [31:0] RAM[63:0];
-    initial $readmemh("riscvtest.txt",RAM);
-    assign rd = RAM[a[31:2]]; // word aligned 
-endmodule
-
-module dmem(
-    input logic clk, we, 
-    input logic [31:0] a, wd,
-    output logic [31:0] rd
-); 
-    logic [31:0] RAM[63:0];
-    assign rd = RAM[a[31:2]]; // word aligned
+    logic [31:0] ReadData;
+    logic [2:0] funct3; // i hope this is right for shared funct3 
     
-    always_ff @(posedge clk)
-        if (we) RAM[a[31:2]] <= wd;
+    riscv rv_multi(.clk(clk), .ReadData(ReadData), .Adr(Adr), .MemWrite(MemWrite), .WriteData(WriteData), .funct3(funct3));
+    memory mem(.clk(clk), .write_mem(MemWrite), .funct3(funct3), .write_address(Adr), .write_data(WriteData),
+    .read_address(Adr), .read_data(ReadData));
+
+    // memory module IO
+    // input logic     clk, --- check
+    // input logic     write_mem, --- check
+    // input logic     [2:0] funct3, --- // Instr[14:12]...? --> expose funct3
+    // input logic     [31:0] write_address, --- Adr from mux selection
+    // input logic     [31:0] write_data, --- check
+    // input logic     [31:0] read_address, --- Adr from mux selection
+    // output logic    [31:0] read_data, --- check
 endmodule
-
-
-*/

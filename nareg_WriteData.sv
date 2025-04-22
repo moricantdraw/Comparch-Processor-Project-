@@ -1,4 +1,5 @@
-module na_reg_WriteData(
+module nareg_WriteData(
+    input logic     clk,
     input logic     RD1,
     input logic     RD2,
     output logic    A,

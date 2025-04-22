@@ -1,9 +1,10 @@
-module register_Instr(
-    input logic [31:0] RD,
-    input logic [31:0] PC,
-    input logic IRWrite,
-    output logic [31:0] Instr,
-    output logic [31:0] OldPC
+module nareg_Instr(
+    input logic     clk,
+    input logic     [31:0] RD,
+    input logic     [31:0] PC,
+    input logic     IRWrite,
+    output logic    [31:0] Instr,
+    output logic    [31:0] OldPC
 );
 
     always_ff@(posedge clk) begin
