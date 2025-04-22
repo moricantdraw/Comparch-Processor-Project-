@@ -1,7 +1,7 @@
 module mux_SrcB(
     input logic [31:0] WriteData, ImmExt,
     input logic [1:0] ALUSrcB,
-    output logic SrcB,
+    output logic SrcB
 );
 
 always_comb begin
