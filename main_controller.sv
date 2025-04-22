@@ -4,7 +4,7 @@
 `include "branch_decoder.sv"
 
 module control_unit(
-    input logic clk,
+    input logic clk, rst,
     input logic [6:0] op,
     input logic [2:0] funct3,
     input logic funct7b5,
@@ -23,6 +23,7 @@ module control_unit(
 	
     main_fsm MainFSM (
         .clk            (clk), 
+        .rst            (rst),
         .op             (op), 
         .branch         (branch), 
         .PCUpdate       (PCUpdate), 

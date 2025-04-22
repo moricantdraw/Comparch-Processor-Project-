@@ -2,10 +2,22 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer
 
+async def reset_signal(dut):
+    """Try accessing the design."""
+    dut.rst.value = 0
+    await Timer(1, "ns")
+    dut.rst.value = 1
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    dut.rst.value = 0
+
 @cocotb.test()
 async def test_test(dut):
     clock = Clock(dut.clk, 10, units="ns")
     cocotb.start_soon(clock.start())
+
+    reset_signal(dut)
+    await Timer(1, "ns")
     value = dut.rv_multi.DP.nonarchreg_PC.PC.value
     value2 = dut.rv_multi.ControlUnit.PCWrite.value
     state = dut.rv_multi.ControlUnit.MainFSM.state.value
