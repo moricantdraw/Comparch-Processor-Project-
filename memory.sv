@@ -74,6 +74,7 @@ module memory #(
     initial begin
         if (INIT_FILE) begin
             $readmemh(INIT_FILE, memory);
+            $display("mem[0] = %h", memory[0]);
         end
         else begin
             for (i = 0; i < 2048; i++) begin

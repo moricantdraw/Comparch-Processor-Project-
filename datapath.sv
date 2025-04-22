@@ -38,11 +38,6 @@ module datapath (
     logic [31:0] ImmExt;
     logic [31:0] PC, OldPC;
 
-    // initial begin
-    //     PC = 32'h0;
-    //     Instr = 32'h0;
-    // end
-
     // nonarchitectural program counter 
     nareg_PC nonarchreg_PC(.clk(clk), .rst(rst), .PCNext(Result), .PCWrite(PCWrite), .PC(PC));
 
@@ -60,7 +55,7 @@ module datapath (
         .we3(RegWrite),
         .wd3(Result),        // data to write back
         .rd1(RD1),
-        .rd2(RD2)
+        .rd2(RD2) 
     );
     nareg_WriteData nonarchreg_WriteData(.clk(clk), .rst(rst), .RD1(RD1), .RD2(RD2), .A(A), .WriteData(WriteData));
 

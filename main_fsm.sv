@@ -24,14 +24,19 @@ module main_fsm (
         s10 = 4'd10,
         s11 = 4'd11,
         s12 = 4'd12,
-        s13 = 4'd13;  // error state
+        s13 = 4'd13,  // error state
+        s14 = 4'd14;  // new wait state (reset delay)
 
 
     logic [3:0] state, nextstate;
 
 	always_ff @(posedge clk, posedge rst) begin
-		if(rst)
-			state <= s0;
+		// if(rst)
+		// 	state <= s0;
+		// else
+		// 	state <= nextstate;
+        if (rst)
+			state <= s14; // Start in wait state after reset
 		else
 			state <= nextstate;
 	end
@@ -39,6 +44,7 @@ module main_fsm (
     // Next‐state logic
     always_comb begin
         case (state)
+            s14: nextstate = s0; // single-cycle delay after reset
             s0:  nextstate = s1;
             s1:  // decode and dispatch
                 case (op)
@@ -72,6 +78,7 @@ module main_fsm (
             s11: nextstate = s7;  // write‐back auipc
             s12: nextstate = s0;  // write‐back lui
             s13: nextstate = s13; // error
+            default: nextstate = s13;
         endcase
     end
 
@@ -157,6 +164,9 @@ module main_fsm (
                 ALUSrcA   = 2'bxx;
                 AdrSrc    = 1'bx;
                 ALUOp     = 2'bxx;
+            end
+            s14: begin
+                // Wait one cycle after reset: all signals default (no IRWrite or PCUpdate)
             end
         endcase
     end

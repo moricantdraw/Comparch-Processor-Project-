@@ -49,7 +49,7 @@ module riscv(
     logic funct7b5;
 
     assign opcode = Instr[6:0];
-    assign funct3 = Instr[14:12]; // janky specific case of output cuz of memory module
+    assign funct3 = AdrSrc ? Instr[14:12] : 3'b010; // janky specific case of output cuz of memory module
     assign funct7b5 = Instr[30];
     
     // control unit IO
