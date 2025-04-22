@@ -28,6 +28,10 @@ module main_fsm (
 
     logic [3:0] state, nextstate;
 
+    initial begin
+        nextstate = s0;
+    end
+
     always_ff @(posedge clk) begin
         state <= nextstate;
     end
@@ -68,7 +72,6 @@ module main_fsm (
             s11: nextstate = s7;  // write‐back auipc
             s12: nextstate = s0;  // write‐back lui
             s13: nextstate = s13; // error
-            default: nextstate = s13;
         endcase
     end
 

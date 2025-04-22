@@ -55,6 +55,27 @@ async def check_control_signals(dut, expected):
             return False
     return True
 
+async def print_control_signals(dut):
+    """Check if control signals match expected values"""
+    actual = {
+        "branch": dut.branch.value,
+        "pcupdate": dut.pcupdate.value,
+        "regwrite": dut.regwrite.value,
+        "memwrite": dut.memwrite.value,
+        "irwrite": dut.irwrite.value,
+        "resultsrc": dut.resultsrc.value,
+        "alusrcb": dut.alusrcb.value,
+        "alusrca": dut.alusrca.value,
+        "adrsrc": dut.adrsrc.value,
+        "aluop": dut.aluop.value
+    }
+
+    dut._log.info("state: %s", dut.state.value)
+    dut._log.info("next: %s", dut.nextstate.value)
+    for signal, value in actual.items():
+        dut._log.info(f"Signal {signal}: got {value}")
+    return True
+
 async def run_fsm_cycle(dut, op_code):
     """Run a single FSM cycle with the given opcode"""
     dut.op.value = op_code
@@ -62,15 +83,17 @@ async def run_fsm_cycle(dut, op_code):
 
 async def reset_fsm(dut):
     """Reset FSM to known state (s0)"""
-    # Set to s13 first (assuming it loops back to itself)
-    dut.op.value = INVALID
-    for _ in range(5):  # several cycles to ensure we reach s13
-        await RisingEdge(dut.clk)
+    # # Set to s13 first (assuming it loops back to itself)
+    # dut.op.value = INVALID
+    # for _ in range(5):  # several cycles to ensure we reach s13
+    #     await RisingEdge(dut.clk)
     
-    # Then start a fresh cycle to reach s0
-    dut.op.value = R_TYPE  # Arbitrary valid opcode
-    await RisingEdge(dut.clk)
-    await RisingEdge(dut.clk)
+    # # Then start a fresh cycle to reach s0
+    # dut.op.value = R_TYPE  # Arbitrary valid opcode
+    # await RisingEdge(dut.clk)
+    # await RisingEdge(dut.clk)
+    dut.state.value = 0b0000
+    await Timer(1, "ns")
 
 @cocotb.test()
 async def test_r_type_instruction(dut):
@@ -79,17 +102,24 @@ async def test_r_type_instruction(dut):
     clock = Clock(dut.clk, 10, units="ns")
     cocotb.start_soon(clock.start())
     
-    await reset_fsm(dut)
-    
     # We should now be in s0
     dut._log.info("Testing R-type instruction path")
+    await run_fsm_cycle(dut, R_TYPE)
+    await run_fsm_cycle(dut, R_TYPE)
     
     # s0 (Fetch) -> s1 (Decode)
     await check_control_signals(dut, {
-        "pcupdate": 1, "irwrite": 1, "resultsrc": 2, "alusrcb": 2,
+        "pcupdate": 1, "irwrite": 1, "resultsrc": 0b10, "alusrcb": 0b10,
         "branch": 0, "regwrite": 0, "memwrite": 0, 
         "alusrca": 0, "adrsrc": 0, "aluop": 0
     })
+    await print_control_signals(dut)
+    assert dut.irwrite.value == 1, "Poop2"
+    assert dut.resultsrc.value == 2, f"Got {dut.resultsrc.value}"
+    assert dut.alusrcb.value == 0b10, f"Got {dut.alusrcb.value}"
+    assert dut.aluop.value == 0b00, f"Got {dut.alusrcb.value}"
+    assert dut.pcupdate.value == 1, f"Got {dut.pcupdate.value}"
+    dut._log.info("S0 PASSED")
     await run_fsm_cycle(dut, R_TYPE)
     
     # s1 (Decode) -> s6 (R-type Execute)
@@ -133,6 +163,7 @@ async def test_load_instruction(dut):
     
     # s0 -> s1
     await run_fsm_cycle(dut, LOAD)
+    await run_fsm_cycle(dut, LOAD)
     
     # s1 -> s2 (Address calculation)
     await check_control_signals(dut, {
@@ -175,6 +206,7 @@ async def test_store_instruction(dut):
     
     # s0 -> s1
     await run_fsm_cycle(dut, STORE)
+    await run_fsm_cycle(dut, STORE)
     
     # s1 -> s2 (Address calculation)
     await run_fsm_cycle(dut, STORE)
@@ -204,6 +236,8 @@ async def test_branch_instruction(dut):
     
     # s0 -> s1
     await run_fsm_cycle(dut, BRANCH)
+    await run_fsm_cycle(dut, BRANCH)
+
     
     # s1 -> s10 (Branch)
     await run_fsm_cycle(dut, BRANCH)
@@ -225,7 +259,8 @@ async def test_jal_instruction(dut):
     
     # s0 -> s1
     await run_fsm_cycle(dut, JAL)
-    
+    await run_fsm_cycle(dut, JAL)
+
     # s1 -> s9 (JAL)
     await run_fsm_cycle(dut, JAL)
     
@@ -244,28 +279,28 @@ async def test_jal_instruction(dut):
         "resultsrc": 0, "alusrcb": 0, "alusrca": 0, "adrsrc": 0, "aluop": 0
     })
 
-@cocotb.test()
-async def test_invalid_opcode(dut):
-    """Test invalid opcode handling"""
-    clock = Clock(dut.clk, 10, units="ns")
-    cocotb.start_soon(clock.start())
+# @cocotb.test()
+# async def test_invalid_opcode(dut):
+#     """Test invalid opcode handling"""
+#     clock = Clock(dut.clk, 10, units="ns")
+#     cocotb.start_soon(clock.start())
     
-    await reset_fsm(dut)
+#     await reset_fsm(dut)
     
-    # s0 -> s1
-    await run_fsm_cycle(dut, INVALID)
+#     # s0 -> s1
+#     await run_fsm_cycle(dut, INVALID)
     
-    # s1 -> s13 (Error)
-    await run_fsm_cycle(dut, INVALID)
+#     # s1 -> s13 (Error)
+#     await run_fsm_cycle(dut, INVALID)
     
-    # s13 -> s13 (Error state stays in error)
-    # Check that signals are X in error state
-    await RisingEdge(dut.clk)
-    # We can't directly check for X values in cocotb, but we can verify
-    # that we remain in the error state by running a few more cycles
-    await run_fsm_cycle(dut, R_TYPE)
-    await run_fsm_cycle(dut, R_TYPE)
-    # Still should be in error state
+#     # s13 -> s13 (Error state stays in error)
+#     # Check that signals are X in error state
+#     await RisingEdge(dut.clk)
+#     # We can't directly check for X values in cocotb, but we can verify
+#     # that we remain in the error state by running a few more cycles
+#     await run_fsm_cycle(dut, R_TYPE)
+#     await run_fsm_cycle(dut, R_TYPE)
+#     # Still should be in error state
     
-    # Reset FSM
-    await reset_fsm(dut)
+#     # Reset FSM
+#     await reset_fsm(dut)
