@@ -2,7 +2,7 @@
 `include "memory.sv"
 
 module top(
-    input logic clk, 
+    input logic clk, rst,
     output logic [31:0] WriteData, Adr,
     output logic MemWrite
     
@@ -10,11 +10,26 @@ module top(
     logic [31:0] ReadData;
     logic [2:0] funct3; // i hope this is right for shared funct3 
     
-    riscv rv_multi(.clk(clk), .ReadData(ReadData), .Adr(Adr), .MemWrite(MemWrite), .WriteData(WriteData), .funct3(funct3));
-    mem # (
+    riscv rv_multi (
+        .clk            (clk), 
+        .rst            (rst),
+        .ReadData       (ReadData), 
+        .Adr            (Adr), 
+        .MemWrite       (MemWrite), 
+        .WriteData      (WriteData), 
+        .funct3         (funct3)
+    );
+    memory #(
         .INIT_FILE      ("rv32i_test.txt")
-    )memory(.clk(clk), .write_mem(MemWrite), .funct3(funct3), .write_address(Adr), .write_data(WriteData),
-    .read_address(Adr), .read_data(ReadData));
+    ) memory (
+        .clk            (clk), 
+        .write_mem      (MemWrite), 
+        .funct3         (funct3), 
+        .write_address  (Adr), 
+        .write_data     (WriteData),
+        .read_address   (Adr), 
+        .read_data      (ReadData)
+    );
 
     // memory module IO
     // input logic     clk, --- check

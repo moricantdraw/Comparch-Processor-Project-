@@ -1,4 +1,4 @@
-module branchDec(
+module branch_decoder(
     input logic [6:0] op,
     input logic [2:0] funct3,
     input logic branch,

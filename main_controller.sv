@@ -5,47 +5,46 @@
 
 module control_unit(
     input logic clk,
-    input logic reset,
     input logic [6:0] op,
     input logic [2:0] funct3,
     input logic funct7b5,
-    input logic zero, carry_out, overflow, sign,
-    output logic [2:0] immsrc,
-    output logic [1:0] alusrca, alusrcb,
-    output logic [1:0] resultsrc,
-    output logic adrsrc,
-    output logic [3:0] alucontrol,
-    output logic irwrite, pcwrite,
-    output logic regwrite, memwrite
+    input logic Zero, CarryOut, Overflow, Sign,
+    output logic [2:0] ImmSrc,
+    output logic [1:0] ALUSrcA, ALUSrcB,
+    output logic [1:0] ResultSrc,
+    output logic AdrSrc,
+    output logic [3:0] ALUControl,
+    output logic IRWrite, PCWrite,
+    output logic RegWrite, MemWrite
 );
 
-	logic beq, bne, blt, bge, bltu, bgeu, branch, pcupdate;
-	logic [1:0] aluop;
+	logic beq, bne, blt, bge, bltu, bgeu, branch, PCUpdate;
+	logic [1:0] ALUOp;
 	
     main_fsm MainFSM (
         .clk            (clk), 
         .op             (op), 
         .branch         (branch), 
-        .pcupdate       (pcupdate), 
-        .regwrite       (regwrite), 
-        .memwrite       (memwrite), 
-        .irwrite        (irwrite), 
-        .resultsrc      (resultsrc), 
-        .alusrcb        (alusrcb), 
-        .alusrca        (alusrca), 
-        .adrsrc         (adrsrc), 
-        .aluop          (aluop)
+        .PCUpdate       (PCUpdate), 
+        .RegWrite       (RegWrite), 
+        .MemWrite       (MemWrite), 
+        .IRWrite        (IRWrite), 
+        .ResultSrc      (ResultSrc), 
+        .ALUSrcB        (ALUSrcB), 
+        .ALUSrcA        (ALUSrcA), 
+        .AdrSrc         (AdrSrc), 
+        .ALUOp          (ALUOp)
     );
     alu_decoder AluDecoder (
-        .aluop          (aluop), 
+        .ALUOp          (ALUOp), 
         .op5            (op[5]), 
         .funct7b5       (funct7b5), 
         .funct3         (funct3), 
-        .alucontrol     (alucontrol)
+        .ALUControl     (ALUControl)
     );
     instr_decoder InstrDecoder (
         .op             (op), 
-        .immsrc         (immsrc)
+        .ImmSrc         (ImmSrc)
     );
     branch_decoder BranchDecoder (
         .op             (op), 
@@ -60,14 +59,14 @@ module control_unit(
     );
 
 	
-	assign pcwrite = 
-       (beq  &  zero)               // branch if equal
-    |  (bne  & ~zero)               // branch if not equal
-    |  (bgeu &  cout)               // branch if greater than or equal unsigned
-    |  (bltu & ~cout)               // branch if less than unsigned
-    |  (bge  & (sign == overflow))  // branch if greater than or equal signed
-    |  (blt  & (sign != overflow))  // branch if less than signed
-    |  pcupdate;                    // always update if pcupdate is high
+	assign PCWrite = 
+       (beq  &  Zero)               // branch if equal
+    |  (bne  & ~Zero)               // branch if not equal
+    |  (bgeu &  CarryOut)           // branch if greater than or equal unSigned
+    |  (bltu & ~CarryOut)           // branch if less than unSigned
+    |  (bge  & (Sign == Overflow))  // branch if greater than or equal Signed
+    |  (blt  & (Sign != Overflow))  // branch if less than Signed
+    |  PCUpdate;                    // always update if PCUpdate is high
 
 	
 endmodule 
