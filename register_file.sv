@@ -8,9 +8,16 @@ module register_file (
 );
     logic [31:0] registers [31:0];
 
+    // initialize registers to 0 for simulation output 
+    initial begin
+        for (int i = 0; i < 32; i++) begin
+            registers[i] = 32'b0;
+        end
+    end
+
     // Write port
     always_ff @(posedge clk) begin
-        if (we3) begin
+        if (we3 && a3 != 0) begin
             registers[a3] <= wd3;
         end
     end
