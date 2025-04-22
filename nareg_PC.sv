@@ -1,4 +1,4 @@
-module na_reg_PC(
+module nareg_PC(
     input logic     clk,
     input logic     [31:0] PCNext,
     input logic     PCWrite,
