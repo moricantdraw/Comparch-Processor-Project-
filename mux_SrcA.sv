@@ -1,9 +1,9 @@
 module mux_SrcA(
     input logic     [31:0] PC,
     input logic     [31:0] OldPC,
-    input logic     A,
+    input logic     [31:0] A,
     input logic     [1:0] ALUSrcA,
-    output logic    [1:0] SrcA
+    output logic    [31:0] SrcA
 );
 
 always_comb begin

@@ -38,7 +38,7 @@ module datapath (
     logic [31:0] PC, OldPC;
 
     // nonarchitectural program counter 
-    nareg_PC #(32) PC_reg(.clk(clk), .PCNext(Result), .PCWrite(PCWrite), .PC(PC));
+    nareg_PC nonarchreg_PC(.clk(clk), .PCNext(Result), .PCWrite(PCWrite), .PC(PC));
 
      // memory peripherals (actual memory module in top module)
     mux_Adr mux_Address(.PC(PC), .Result(Result), .AdrSrc(AdrSrc), .Adr(Adr));
@@ -48,9 +48,9 @@ module datapath (
     // register file and nonarchitectural register
     register_file rf (
         .clk(clk),
-        .a1(instr[19:15]),   // rs1
-        .a2(instr[24:20]),   // rs2
-        .a3(instr[11:7]),    // rd
+        .a1(Instr[19:15]),   // rs1
+        .a2(Instr[24:20]),   // rs2
+        .a3(Instr[11:7]),    // rd
         .we3(RegWrite),
         .wd3(Result),        // data to write back
         .rd1(rd1),
@@ -69,7 +69,7 @@ module datapath (
     nareg_ALUOut nonarchreg_ALUOut(.clk(clk), .ALUResult(ALUResult), .ALUOut(ALUOut));
 
     // select Result signal
-    mux_Result mux_Result(.ALUOut(ALUOut), .Data(Data), .ALUResult(ALUResult), .ResultSrc(ResultSrc), .Result(Result));
+    mux_Result mux_Result(.ALUOut(ALUOut), .Data(Data), .ALUResult(ALUResult), .ImmExt(ImmExt), .ResultSrc(ResultSrc), .Result(Result));
 
 endmodule
 

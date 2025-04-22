@@ -17,7 +17,7 @@ module Extend(
             // J-type
             3'b011: ImmExt = {{12{Instr[31]}}, Instr[19:12], Instr[20], Instr[30:21], 1'b0};
             default:
-                imm = 32'b0;
+                ImmExt = 32'b0;
         endcase
     end
     

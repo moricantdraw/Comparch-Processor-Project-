@@ -1,6 +1,6 @@
 module register_file (
     input logic     clk,
-    input logic     [5:0] a1, a2, a3,
+    input logic     [4:0] a1, a2, a3,
     input logic     we3,
     input logic     [31:0] wd3,
     output logic    [31:0] rd1, rd2
@@ -15,7 +15,8 @@ module register_file (
         end
     end
 
-    assign rd1 = (a1 != 0) ? rf[a1] : 0;
-    assign rd2 = (a2 != 0) ? rf[a2] : 0;
+    assign rd1 = (a1 != 0) ? registers[a1] : 0;
+    assign rd2 = (a2 != 0) ? registers[a2] : 0;
 
 endmodule
+

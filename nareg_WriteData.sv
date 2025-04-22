@@ -1,8 +1,8 @@
 module nareg_WriteData(
     input logic     clk,
-    input logic     RD1,
-    input logic     RD2,
-    output logic    A,
+    input logic     [31:0] RD1,
+    input logic     [31:0] RD2,
+    output logic    [31:0] A,
     output logic    WriteData
 );
     always_ff@(posedge clk) begin

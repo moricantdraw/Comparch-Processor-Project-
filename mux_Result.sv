@@ -2,6 +2,7 @@ module mux_Result(
     input logic     [31:0] ALUOut,
     input logic     [31:0] Data,
     input logic     [31:0] ALUResult,
+    input logic     [31:0] ImmExt,
     input logic     [1:0] ResultSrc,
     output logic    [31:0] Result
 );
