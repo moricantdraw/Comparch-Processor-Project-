@@ -62,7 +62,7 @@ module riscv(
     // assign funct3 = AdrSrc ? Instr[14:12] : 3'b010; // janky specific case of output cuz of memory module
     // assign funct3 = Instr[14:
     // pull from Instr if load and store, otherwise 010
-    assign funct3 = (opcode == 7'b0000011 || opcode == 7'b0100011) ? Instr[14:12] : 3'b010; 
+    assign funct3 = Instr[14:12]; 
     assign funct7b5 = Instr[30];
     
     // control unit IO

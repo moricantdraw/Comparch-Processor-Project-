@@ -16,7 +16,7 @@ async def test_final(dut):
     # await RisingEdge(dut.clk)
 
     # Now start fetching
-    for _ in range(10):
+    for _ in range(50):
         await RisingEdge(dut.clk)
         instr = int(dut.rv_multi.DP.Instr.value)
         pc = int(dut.rv_multi.DP.PC.value)

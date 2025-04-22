@@ -8,7 +8,8 @@ module top(
     
 );
     logic [31:0] ReadData;
-    logic [2:0] funct3; // i hope this is right for shared funct3 
+    logic [2:0] funct3, memory_funct3; // i hope this is right for shared funct3
+    assign memory_funct3 = 3'b010;
     
     riscv rv_multi (
         .clk            (clk), 
@@ -24,7 +25,7 @@ module top(
     ) memory (
         .clk            (clk), 
         .write_mem      (MemWrite), 
-        .funct3         (funct3), 
+        .funct3         (memory_funct3), 
         .write_address  (Adr), 
         .write_data     (WriteData),
         .read_address   (Adr), 

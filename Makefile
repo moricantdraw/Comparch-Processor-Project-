@@ -10,5 +10,7 @@ PYTHON_BIN ?= /usr/local/Caskroom/miniconda/base/envs/comparch/bin/python
 COCOTB_HDL_TIMEUNIT = 1ns
 COCOTB_HDL_TIMEPRECISION = 1ps
 
+# COMPILE_ARGS += -P $(TOPLEVEL).INIT_FILE=\"rv32i_test.txt\"
+
 # Include the standard Icarus makefile configuration
 include $(shell cocotb-config --makefiles)/Makefile.sim
