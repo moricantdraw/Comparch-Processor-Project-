@@ -13,6 +13,7 @@
 
 module datapath (
     input logic     clk,
+    input logic     rst,
     input logic     PCWrite,
     input logic     AdrSrc,
     // input logic     MemWrite, don't need cuz goes to memory module
@@ -37,13 +38,18 @@ module datapath (
     logic [31:0] ImmExt;
     logic [31:0] PC, OldPC;
 
+    // initial begin
+    //     PC = 32'h0;
+    //     Instr = 32'h0;
+    // end
+
     // nonarchitectural program counter 
-    nareg_PC nonarchreg_PC(.clk(clk), .PCNext(Result), .PCWrite(PCWrite), .PC(PC));
+    nareg_PC nonarchreg_PC(.clk(clk), .rst(rst), .PCNext(Result), .PCWrite(PCWrite), .PC(PC));
 
      // memory peripherals (actual memory module in top module)
     mux_Adr mux_Address(.PC(PC), .Result(Result), .AdrSrc(AdrSrc), .Adr(Adr));
-    nareg_Instr nonarchreg_Instr(.clk(clk), .RD(ReadData), .PC(PC), .IRWrite(IRWrite), .Instr(Instr), .OldPC(OldPC));
-    nareg_Data nonarchreg_data(.clk(clk), .ReadData(ReadData), .Data(Data));
+    nareg_Instr nonarchreg_Instr(.clk(clk), .rst(rst), .RD(ReadData), .PC(PC), .IRWrite(IRWrite), .Instr(Instr), .OldPC(OldPC));
+    nareg_Data nonarchreg_data(.clk(clk), .rst(rst), .ReadData(ReadData), .Data(Data));
 
     // register file and nonarchitectural register
     register_file rf (
@@ -56,7 +62,7 @@ module datapath (
         .rd1(RD1),
         .rd2(RD2)
     );
-    nareg_WriteData nonarchreg_WriteData(.clk(clk), .RD1(RD1), .RD2(RD2), .A(A), .WriteData(WriteData));
+    nareg_WriteData nonarchreg_WriteData(.clk(clk), .rst(rst), .RD1(RD1), .RD2(RD2), .A(A), .WriteData(WriteData));
 
     // extend unit
     Extend extend(.Instr(Instr[31:7]), .ImmSrc(ImmSrc), .ImmExt(ImmExt));
@@ -66,7 +72,7 @@ module datapath (
     mux_SrcB mux_SrcB(.WriteData(WriteData), .ImmExt(ImmExt), .ALUSrcB(ALUSrcB), .SrcB(SrcB));
     ALU alu(.SrcA(SrcA), .SrcB(SrcB), .ALUControl(ALUControl), .ALUResult(ALUResult),
     .Zero(Zero), .CarryOut(CarryOut), .Overflow(Overflow), .Sign(Sign));
-    nareg_ALUOut nonarchreg_ALUOut(.clk(clk), .ALUResult(ALUResult), .ALUOut(ALUOut));
+    nareg_ALUOut nonarchreg_ALUOut(.clk(clk), .rst(rst), .ALUResult(ALUResult), .ALUOut(ALUOut));
 
     // select Result signal
     mux_Result mux_Result(.ALUOut(ALUOut), .Data(Data), .ALUResult(ALUResult), .ImmExt(ImmExt), .ResultSrc(ResultSrc), .Result(Result));

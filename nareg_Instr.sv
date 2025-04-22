@@ -1,5 +1,6 @@
 module nareg_Instr(
     input logic     clk,
+    input logic     rst,
     input logic     [31:0] RD,
     input logic     [31:0] PC,
     input logic     IRWrite,
@@ -7,13 +8,17 @@ module nareg_Instr(
     output logic    [31:0] OldPC
 );
 
-    always_ff@(posedge clk) begin
-        // when IRWrite asserted from Control Unit during fetch, Instr stored
-        if (IRWrite) begin
-            Instr <= RD;
+    always_ff@(posedge clk, posedge rst) begin
+        if (rst) begin
+            PC <= 32'h00000000; // Reset PC to 0
+        end else begin
+            // when IRWrite asserted from Control Unit during fetch, Instr stored
+            if (IRWrite) begin
+                Instr <= RD;
 
-            // OldPC syncs with being captured at the same time too
-            OldPC <= PC;
+                // OldPC syncs with being captured at the same time too
+                OldPC <= PC;
+            end
         end
     end
 
