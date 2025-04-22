@@ -1,12 +1,13 @@
 module main_fsm (
-    input  logic        clk,
+    input  logic        clk, rst, 
     input  logic [6:0]  op,
-    output logic        branch, pcupdate, regwrite, memwrite, irwrite,
-    output logic [1:0]  resultsrc,
-    output logic [1:0]  alusrcb,
-    output logic [1:0]  alusrca,
-    output logic        adrsrc,
-    output logic [1:0]  aluop
+    output logic        branch, PCUpdate, 
+    output logic        RegWrite, MemWrite, IRWrite,
+    output logic [1:0]  ResultSrc,
+    output logic [1:0]  ALUSrcB,
+    output logic [1:0]  ALUSrcA,
+    output logic        AdrSrc,
+    output logic [1:0]  ALUOp
 );
     // States
     localparam logic [3:0]
@@ -28,13 +29,12 @@ module main_fsm (
 
     logic [3:0] state, nextstate;
 
-    initial begin
-        nextstate = s0;
-    end
-
-    always_ff @(posedge clk) begin
-        state <= nextstate;
-    end
+	always_ff @(posedge clk, posedge rst) begin
+		if(rst)
+			state <= s0;
+		else
+			state <= nextstate;
+	end
 
     // Next‐state logic
     always_comb begin
@@ -78,85 +78,85 @@ module main_fsm (
     always_comb begin
         // defaults
         branch    = 1'b0;
-        pcupdate  = 1'b0;
-        regwrite  = 1'b0;
-        memwrite  = 1'b0;
-        irwrite   = 1'b0;
-        resultsrc = 2'b00;
-        alusrcb   = 2'b00;
-        alusrca   = 2'b00;
-        adrsrc    = 1'b0;
-        aluop     = 2'b00;
+        PCUpdate  = 1'b0;
+        RegWrite  = 1'b0;
+        MemWrite  = 1'b0;
+        IRWrite   = 1'b0;
+        ResultSrc = 2'b00;
+        ALUSrcB   = 2'b00;
+        ALUSrcA   = 2'b00;
+        AdrSrc    = 1'b0;
+        ALUOp     = 2'b00;
 
         case (state)
             s0: begin
-                pcupdate  = 1'b1;
-                irwrite   = 1'b1;
-                resultsrc = 2'b10;
-                alusrcb   = 2'b10;
+                PCUpdate  = 1'b1;
+                IRWrite   = 1'b1;
+                ResultSrc = 2'b10;
+                ALUSrcB   = 2'b10;
             end
             s1: begin
-                alusrcb   = 2'b01;
-                alusrca   = 2'b01;
+                ALUSrcB   = 2'b01;
+                ALUSrcA   = 2'b01;
             end
             s2: begin
-                alusrcb   = 2'b01;
-                alusrca   = 2'b10;
+                ALUSrcB   = 2'b01;
+                ALUSrcA   = 2'b10;
             end
             s3: begin
-                alusrcb   = 2'b00;
-                adrsrc    = 1'b1;
+                ALUSrcB   = 2'b00;
+                AdrSrc    = 1'b1;
             end
             s4: begin
-                regwrite  = 1'b1;
-                resultsrc = 2'b01;
+                RegWrite  = 1'b1;
+                ResultSrc = 2'b01;
             end
             s5: begin
-                memwrite  = 1'b1;
-                adrsrc    = 1'b1;
+                MemWrite  = 1'b1;
+                AdrSrc    = 1'b1;
             end
             s6: begin
-                alusrca   = 2'b10;
-                aluop     = 2'b10;
+                ALUSrcA   = 2'b10;
+                ALUOp     = 2'b10;
             end
             s7: begin
-                regwrite  = 1'b1;
+                RegWrite  = 1'b1;
             end
             s8: begin
-                alusrcb   = 2'b01;
-                alusrca   = 2'b10;
-                aluop     = 2'b10;
+                ALUSrcB   = 2'b01;
+                ALUSrcA   = 2'b10;
+                ALUOp     = 2'b10;
             end
             s9: begin
-                pcupdate  = 1'b1;
-                alusrcb   = 2'b10;
-                alusrca   = 2'b01;
+                PCUpdate  = 1'b1;
+                ALUSrcB   = 2'b10;
+                ALUSrcA   = 2'b01;
             end
             s10: begin
                 branch    = 1'b1;
-                alusrca   = 2'b10;
-                aluop     = 2'b01;
+                ALUSrcA   = 2'b10;
+                ALUOp     = 2'b01;
             end
             s11: begin
-                alusrcb   = 2'b01;
-                alusrca   = 2'b01;
+                ALUSrcB   = 2'b01;
+                ALUSrcA   = 2'b01;
             end
             s12: begin
-                regwrite  = 1'b1;
-                resultsrc = 2'b11;
+                RegWrite  = 1'b1;
+                ResultSrc = 2'b11;
             end
             s13: begin
                 // error state → X all
                 branch    = 1'bx;
-                pcupdate  = 1'bx;
-                regwrite  = 1'bx;
-                memwrite  = 1'bx;
-                irwrite   = 1'bx;
-                resultsrc = 2'bxx;
-                alusrcb   = 2'bxx;
-                alusrca   = 2'bxx;
-                adrsrc    = 1'bx;
-                aluop     = 2'bxx;
+                PCUpdate  = 1'bx;
+                RegWrite  = 1'bx;
+                MemWrite  = 1'bx;
+                IRWrite   = 1'bx;
+                ResultSrc = 2'bxx;
+                ALUSrcB   = 2'bxx;
+                ALUSrcA   = 2'bxx;
+                AdrSrc    = 1'bx;
+                ALUOp     = 2'bxx;
             end
         endcase
     end
