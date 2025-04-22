@@ -45,13 +45,15 @@ module riscv(
     logic IRWrite, PCWrite;
     logic RegWrite;
     logic [31:0] Instr;
+    logic [6:0] opcode;
+    logic funct7b5;
 
-    logic opcode = Instr[6:0];
+    assign opcode = Instr[6:0];
     assign funct3 = Instr[14:12]; // janky specific case of output cuz of memory module
-    logic funct7b5 = Instr[30];
+    assign funct7b5 = Instr[30];
     
     // control unit IO
-    control_unit ControlUnit (
+    control_unit ControlUnit ( 
         .clk            (clk), 
         .rst            (rst),
         .op             (opcode), 
