@@ -31,14 +31,14 @@ module main_fsm (
     logic [3:0] state, nextstate;
 
 	always_ff @(posedge clk, posedge rst) begin
-		// if(rst)
-		// 	state <= s0;
-		// else
-		// 	state <= nextstate;
-        if (rst)
-			state <= s14; // Start in wait state after reset
+		if(rst)
+			state <= s0;
 		else
 			state <= nextstate;
+        // if (rst)
+		// 	state <= s14; // Start in wait state after reset
+		// else
+		// 	state <= nextstate;
 	end
 
     // Next‐state logic
@@ -167,6 +167,7 @@ module main_fsm (
             end
             s14: begin
                 // Wait one cycle after reset: all signals default (no IRWrite or PCUpdate)
+                IRWrite = 1'b1;
             end
         endcase
     end

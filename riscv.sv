@@ -46,10 +46,23 @@ module riscv(
     logic RegWrite;
     logic [31:0] Instr;
     logic [6:0] opcode;
+    logic [3:0] funct3_dummy; // dummy for funct3
     logic funct7b5;
 
+
+    // assign opcode = Instr[6:0];
+    // // funct3 is 010 for lw and sw, and Instr[14:12] otherwise
+    // // assign funct3 = (opcode == 7'b0000011 || opcode == 7'b0100011) ? 3'b010 : Instr[14:12];
+    // // assign funct3 = AdrSrc ? Instr[14:12] : 3'b010; // janky specific case of output cuz of memory module
+    // assign funct3_dummy = Instr[14:12];
+    // assign funct3 = funct3_dummy;
+    // assign funct7b5 = Instr[30];
+
     assign opcode = Instr[6:0];
-    assign funct3 = AdrSrc ? Instr[14:12] : 3'b010; // janky specific case of output cuz of memory module
+    // assign funct3 = AdrSrc ? Instr[14:12] : 3'b010; // janky specific case of output cuz of memory module
+    // assign funct3 = Instr[14:
+    // pull from Instr if load and store, otherwise 010
+    assign funct3 = (opcode == 7'b0000011 || opcode == 7'b0100011) ? Instr[14:12] : 3'b010; 
     assign funct7b5 = Instr[30];
     
     // control unit IO
