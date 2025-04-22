@@ -10,7 +10,8 @@ module nareg_Instr(
 
     always_ff@(posedge clk, posedge rst) begin
         if (rst) begin
-            PC <= 32'h00000000; // Reset PC to 0
+            Instr <= 32'h00000000; // Reset Instr to 0
+            OldPC <= 32'h00000000; // Reset OldPC to 0
         end else begin
             // when IRWrite asserted from Control Unit during fetch, Instr stored
             if (IRWrite) begin
