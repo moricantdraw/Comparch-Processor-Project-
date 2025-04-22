@@ -48,75 +48,15 @@ module dataPath (
     // extend unit
     Extend extend(.Instr(Instr[31:7]), .ImmSrc(ImmSrc), .ImmExt(ImmExt));
 
-    // ALU 
+    // ALU and peripherals 
     mux_SrcA mux_SrcA(.PC(PC), .OldPC(OldPC), .A(A), .ALUSrcA(ALUSrcA), .SrcA(SrcA));
     mux_SrcB mux_SrcB(.WriteData(WriteData), .ImmExt(ImmExt), .ALUSrcB(ALUSrcB), .SrcB(SrcB));
-    ALU alu(.SrcA(SrcA), .SrcB(SrcB), .ALUControl(ALUControl), .ALUResult(ALUResult), .Zero(Zero), cout, overflow, sign);
-    flopr #(32) aluReg (clk, reset, ALUResult, ALUOut);
-    mux4 #(32) resultMux(ALUOut, Data, ALUResult, ImmExt, ResultSrc, Result );
+    ALU alu(.SrcA(SrcA), .SrcB(SrcB), .ALUControl(ALUControl), .ALUResult(ALUResult),
+    .Zero(Zero), .CarryOut(CarryOut), .Overflow(Overflow), .Sign(Sign));
+    nareg_ALUOut nonarchreg_ALUOut(.clk(clk), .ALUResult(ALUResult), .ALUOut(ALUOut));
 
-
-    // Register File
-    assign WriteData = rd2;
-
-    // Immediate Generator 
-    extend ext (
-        .instr(instr[31:7]),
-        .ImmSrc(ImmSrc),
-        .ImmExt(ImmExt)
-    );
-
-    // ALU Input Selection 
-    assign SrcB = ALUSrc ? ImmExt : rd2;
-
-    // ALU 
-    alu alu_unit (
-        .a(rd1),
-        .b(SrcB),
-        .aluControl(ALUControl),
-        .result(ALUResult),
-    );
-
-    // Result Mux
-    always_comb begin
-        case (ResultSrc)
-            2'b00: Result = ALUResult;
-            2'b01: Result = ReadData;
-            2'b10: Result = ImmExt;
-            default: Result = 32'bx;
-        endcase
-    end
+    // select Result signal
+    mux_Result mux_Result(.ALUOut(ALUOut), .Data(Data), .ALUResult(ALUResult), .ResultSrc(ResultSrc), .Result(Result));
 
 endmodule
-
-// logic [31:0] Result , ALUOut, ALUResult;
-// logic [31:0] RD1, RD2, A , SrcA, SrcB, Data;
-// logic [31:0] ImmExt;
-// logic [31:0] PC, OldPC;
-
-
-// //pc
-// flopenr #(32) pcFlop(clk, reset, PCWrite, Result, PC);
-
-
-// //regFile
-// regFile rf(clk, RegWrite, instr[19:15], instr[24:20], instr[11:7], Result, RD1, RD2); 
-// extend ext(instr[31:7], ImmSrc, ImmExt);
-// flopr #(32) regF( clk, reset, RD1, A);
-// flopr #(32) regF_2( clk, reset, RD2, WriteData);
-
-
-// //alu
-// mux3 #(32) srcAmux(PC, OldPC, A, ALUSrcA, SrcA);
-// mux3 #(32) srcBmux(WriteData, ImmExt, 32'd4, ALUSrcB, SrcB);
-// alu alu(SrcA, SrcB, ALUControl, ALUResult, Zero, cout, overflow, sign);
-// flopr #(32) aluReg (clk, reset, ALUResult, ALUOut);
-// mux4 #(32) resultMux(ALUOut, Data, ALUResult, ImmExt, ResultSrc, Result );
-
-// //mem
-// mux2 #(32) adrMux(PC, Result, AdrSrc, Adr);
-// flopenr #(32) memFlop1(clk, reset, IRWrite, PC, OldPC); 
-// flopenr #(32) memFlop2(clk, reset, IRWrite, ReadData, instr);
-// flopr #(32) memDataFlop(clk, reset, ReadData, Data);
-
 

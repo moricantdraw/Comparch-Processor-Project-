@@ -1,4 +1,5 @@
-module na_reg_ALUOut(
+module nareg_ALUOut(
+    input logic     clk,
     input logic     ALUResult,
     output logic     ALUOut
 );

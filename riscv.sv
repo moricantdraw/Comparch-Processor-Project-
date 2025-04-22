@@ -36,7 +36,7 @@ module riscv(
     logic [1:0] ResultSrc, ImmSrc;
     logic [1:0] ALUSrcA, ALUSrcB;
     logic AdrSrc;
-    logic Zero;
+    logic Zero, CarryOut, Overflow, Sign;
     logic [2:0] ALUControl;
     logic IRWrite, PCWrite;
     logic RegWrite;
@@ -47,10 +47,13 @@ module riscv(
     logic funct7 = Instr[30];
     
     // control unit IO
-    control_unit controller(.clk(clk), .op(opcode), .funct3(funct3), .funct7(funct7), .Zero(Zero), .PCWrite(PCWrite), .AdrSrc(AdrSrc),
-    .MemWrite(MemWrite), .IRWrite(IRWrite), .ResultSrc(ResultSrc), .ALUControl(ALUControl), .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), 
-    .RegWrite(RegWrite));
+    control_unit controller(.clk(clk), .op(opcode), .funct3(funct3), .funct7(funct7), .Zero(Zero), .PCWrite(PCWrite),
+    .AdrSrc(AdrSrc), .MemWrite(MemWrite), .IRWrite(IRWrite), .ResultSrc(ResultSrc), .ALUControl(ALUControl),
+    .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), .RegWrite(RegWrite));
 
     // fill in datapasth IO
-    datapath dp();
+    datapath dp(.clk(clk), .PCWrite(PCWrite), .AdrSrc(AdrSrc), .IRWrite(IRWrite), .ResultSrc(ResultSrc),
+    .ALUControl(ALUControl), .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), .RegWrite(RegWrite),
+    .ReadData(ReadData), .Zero(Zero), .CarryOut(CarryOut), .Overflow(Overflow), .Sign(Sign), .Adr(Adr),
+    .WriteData(WriteData), .Instr(Instr));
 endmodule

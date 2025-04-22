@@ -1,4 +1,4 @@
-module Result_mux(
+module mux_Result(
     input logic     [31:0] ALUOut,
     input logic     [31:0] Data,
     input logic     [31:0] ALUResult,
