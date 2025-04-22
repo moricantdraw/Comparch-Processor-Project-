@@ -1,3 +1,8 @@
+`include "main_fsm.sv"
+`include "alu_decoder.sv"
+`include "instr_decoder.sv"
+`include "branch_decoder.sv"
+
 module control_unit(
     input logic clk,
     input logic reset,
@@ -42,27 +47,18 @@ module control_unit(
         .op             (op), 
         .immsrc         (immsrc)
     );
+    branch_decoder BranchDecoder (
+        .op             (op), 
+        .funct3         (funct3), 
+        .branch         (branch), 
+        .beq            (beq), 
+        .bne            (bne), 
+        .blt            (blt), 
+        .bge            (bge), 
+        .bltu           (bltu), 
+        .bgeu           (bgeu)
+    );
 
-    // Branch instructions
-    always_comb begin
-        beq  = 0;
-        bne  = 0;
-        blt  = 0;
-        bge  = 0;
-        bltu = 0;
-        bgeu = 0;
-
-        if (op == 7'b1100011 && branch) begin
-            case (funct3)
-                3'b000: beq  = 1; 
-                3'b001: bne  = 1; 
-                3'b100: blt  = 1;
-                3'b101: bge  = 1; 
-                3'b110: bltu = 1; 
-                3'b111: bgeu = 1;
-            endcase
-        end
-    end
 	
 	assign pcwrite = 
        (beq  &  zero)               // branch if equal
