@@ -1,3 +1,6 @@
+`include "main_controller.sv"
+`include "datapath.sv"
+
 module riscv(
     input logic     clk,
     input logic     [31:0] ReadData, // from memory module
@@ -47,7 +50,7 @@ module riscv(
     logic funct7 = Instr[30];
     
     // control unit IO
-    control_unit controller(.clk(clk), .op(opcode), .funct3(funct3), .funct7(funct7), .Zero(Zero), .PCWrite(PCWrite),
+    controller control_unit(.clk(clk), .op(opcode), .funct3(funct3), .funct7(funct7), .Zero(Zero), .PCWrite(PCWrite),
     .AdrSrc(AdrSrc), .MemWrite(MemWrite), .IRWrite(IRWrite), .ResultSrc(ResultSrc), .ALUControl(ALUControl),
     .ALUSrcA(ALUSrcA), .ALUSrcB(ALUSrcB), .ImmSrc(ImmSrc), .RegWrite(RegWrite));
 

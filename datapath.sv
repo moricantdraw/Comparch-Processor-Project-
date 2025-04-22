@@ -1,4 +1,17 @@
-module dataPath (
+`include "nareg_PC.sv"
+`include "mux_Adr.sv"
+`include "nareg_Instr.sv"
+`include "nareg_Data.sv"
+`include "register_file.sv"
+`include "nareg_WriteData.sv"
+`include "extend.sv"
+`include "mux_SrcA.sv"
+`include "mux_SrcB.sv"
+`include "ALU.sv"
+`include "nareg_ALUOut.sv"
+`include "mux_Result.sv"
+
+module datapath (
     input logic     clk,
     input logic     PCWrite,
     input logic     AdrSrc,

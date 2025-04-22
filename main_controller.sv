@@ -33,6 +33,4 @@ module controller(
     |  pcupdate;                    // always update if pcupdate is high
 
 	
-	
-	
 endmodule 
