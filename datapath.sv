@@ -53,8 +53,8 @@ module datapath (
         .a3(Instr[11:7]),    // rd
         .we3(RegWrite),
         .wd3(Result),        // data to write back
-        .rd1(rd1),
-        .rd2(rd2)
+        .rd1(RD1),
+        .rd2(RD2)
     );
     nareg_WriteData nonarchreg_WriteData(.clk(clk), .RD1(RD1), .RD2(RD2), .A(A), .WriteData(WriteData));
 
