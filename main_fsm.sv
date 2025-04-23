@@ -25,7 +25,8 @@ module main_fsm (
         s11 = 4'd11,
         s12 = 4'd12,
         s13 = 4'd13,  // error state
-        s14 = 4'd14;  // new wait state (reset delay)
+        s14 = 4'd14,  // new wait state (reset delay)
+        s15 = 4'd15;   // Branch pctarget writing state
 
 
     logic [3:0] state, nextstate;
@@ -74,10 +75,11 @@ module main_fsm (
             s7:  nextstate = s0;  // write‐back R/I‑arith
             s8:  nextstate = s7;  // execute I‑arith
             s9:  nextstate = s7;  // write‐back jal
-            s10: nextstate = s0;  // branch decision
+            s10: nextstate = s15;  // branch decision
             s11: nextstate = s7;  // write‐back auipc
             s12: nextstate = s0;  // write‐back lui
             s13: nextstate = s13; // error
+            s15: nextstate = s0;
             default: nextstate = s13;
         endcase
     end
@@ -168,6 +170,12 @@ module main_fsm (
             s14: begin
                 // Wait one cycle after reset: all signals default (no IRWrite or PCUpdate)
                 IRWrite = 1'b1;
+            end
+            s15: begin
+                // One extra state to allow branch PC target to get in place
+                branch    = 1'b1;
+                ALUSrcA   = 2'b10;
+                ALUOp     = 2'b01;
             end
         endcase
     end

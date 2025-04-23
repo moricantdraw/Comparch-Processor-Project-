@@ -39,7 +39,7 @@ instruction_log = [
     "addi  x11, x0, 80",        # oc = 0x2C, x11 = 0x00000050
     "sw    x4, 0(x11)",         # pc = 0x30, Mem[80] = x4
     "lw    x12, 0(x11)",        # pc = 0x34, x12 = Mem[80]
-    "jal   x13, 12",            # pc = 0x38, x13 = pc + 4 = 0x3C
+    "beq   x5, x7, 12",            # pc = 0x38, x13 = pc + 4 = 0x3C
    # addi x5, x0, 10            Should be skipped, x5 remains 2
     "addi  x7, x0, 1022"        # pc = 0x44, x7 = 0x00000400
 ]
