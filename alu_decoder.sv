@@ -16,18 +16,18 @@ module alu_decoder (
                             ALUControl = 4'b0001;
                         else
                             ALUControl = 4'b0000;
-                    3'b001: // sll
+                    3'b001:
                         ALUControl = 4'b0111;
                     3'b010: 
                         ALUControl = 4'b0101;
-                    3'b011: // sltu
+                    3'b011:
                         ALUControl = 4'b1000;
-                    3'b100: // xor
+                    3'b100: 
                         ALUControl = 4'b1001;
                     3'b101: 
-                        if (funct7b5) // sra
+                        if (funct7b5) 
                             ALUControl = 4'b0100;
-                        else // srl
+                        else 
                             ALUControl = 4'b0110;
                     3'b110: 
                         ALUControl = 4'b0011;

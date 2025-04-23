@@ -3,7 +3,7 @@ TOPLEVEL_LANG ?= verilog
 VERILOG_SOURCES += $(PWD)/top.sv
 
 TOPLEVEL = top
-MODULE = test_final
+MODULE = test_top
 
 # Use a more direct approach for Mac with conda environment
 PYTHON_BIN ?= /usr/local/Caskroom/miniconda/base/envs/comparch/bin/python
