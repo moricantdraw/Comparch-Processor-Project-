@@ -4,9 +4,11 @@ VERILOG_SOURCES += $(PWD)/top.sv
 
 TOPLEVEL = top
 MODULE = test_top
+# MODULE = test_top
+MODULE = test_final
 
 # Use a more direct approach for Mac with conda environment
-PYTHON_BIN ?= /usr/local/Caskroom/miniconda/base/envs/comparch/bin/python
+PYTHON_BIN ?= /Applications/oss-cad-suite/bin/tabbypy3
 COCOTB_HDL_TIMEUNIT = 1ns
 COCOTB_HDL_TIMEPRECISION = 1ps
 
@@ -14,3 +16,7 @@ COCOTB_HDL_TIMEPRECISION = 1ps
 
 # Include the standard Icarus makefile configuration
 include $(shell cocotb-config --makefiles)/Makefile.sim
+
+# # Optional target to clean up
+# clean:
+# 	rm -rf __pycache__ *.vcd *.vvp sim_build

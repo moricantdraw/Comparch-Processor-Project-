@@ -14,6 +14,7 @@ x10 = 0x00000000
 After addi x1, x1, 0xA98      # pc = 0x04, x1 = 0xFEDCBA98:
 x 0 = 0x00000000
 x 1 = 0xFEDCBA98
+x 1 = 0xFEDCBA98
 x 2 = 0x00000000
 x 3 = 0x00000000
 x 4 = 0x00000000
