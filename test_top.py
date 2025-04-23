@@ -20,6 +20,9 @@ import os
 #     "addi  x8, x0, 3",
 #     "addi  x10, x0, 7"
 # ]
+    # "beq   x5, x7, S1",         # should skip next ADDI
+    # "addi  x5, x5, 5",          # skipped, x5 remains 2
+    # "S1:   addi x11, x0, 80",   # pc = 0x30, x11 = 80
 
 instruction_log = [
     "lui   x1, 0xFEDCC",        # pc = 0x00, x1 = 0xFEDCC000
@@ -33,11 +36,12 @@ instruction_log = [
     "sll   x8, x4, x5",         # pc = 0x20, x8 = 0x0048D158
     "ori   x9, x8, 7",          # pc = 0x24, x9 = 0x0048D15F
     "auipc x10, 0x12345",       # pc = 0x28, x10 = 0x12345028
-    "beq   x5, x7, S1",         # should skip next ADDI
-    "addi  x5, x5, 5",          # skipped, x5 remains 2
-    "S1:   addi x11, x0, 80",   # pc = 0x30, x11 = 80
-    "sw    x4, 0(x11)",         # pc = 0x34, Mem[80] = x4
-    "lw    x12, 0(x11)"         # pc = 0x38, x12 = Mem[80]
+    "addi  x11, x0, 80",        # oc = 0x2C, x11 = 0x00000050
+    "sw    x4, 0(x11)",         # pc = 0x30, Mem[80] = x4
+    "lw    x12, 0(x11)",        # pc = 0x34, x12 = Mem[80]
+    "jal   x13, 12",            # pc = 0x38, x13 = pc + 4 = 0x3C
+   # addi x5, x0, 10            Should be skipped, x5 remains 2
+    "addi  x7, x0, 1022"        # pc = 0x44, x7 = 0x00000400
 ]
 
 async def debug_info(dut):
@@ -63,14 +67,6 @@ async def debug_info(dut):
     cocotb.log.info("writedata: 0x%X", int(writedata))
     dut._log.info("adr: 0x%X", int(adr))
 
-    await Timer(5, "ns")
-    cocotb.log.info("----------------------------")
-    dut._log.info("readdata: 0x%X", int(readdata))
-    cocotb.log.info("memwrite: %s", memwrite)
-    cocotb.log.info("writedata: 0x%X", int(writedata))
-    dut._log.info("adr: 0x%X", int(adr))
-    
-
 @cocotb.test()
 async def dump_registers_test(dut):
     # Start clock (assuming 10ns period)
@@ -83,22 +79,24 @@ async def dump_registers_test(dut):
     dut.rst.value = 0
 
     # Dummy cycle to skip the first bogus fetch cycle
-    await RisingEdge(dut.clk)
+    # await RisingEdge(dut.clk)
 
     # Wait and dump registers after each instruction (11 in total)
     output_lines = []
     for i in range(len(instruction_log)):
         if instruction_log[i].startswith(("sw", "lw")):
-            for _ in range(5):  # Wait ~5 cycles per instruction (adjust as needed)
+            for k in range(5):  # Wait ~5 cycles per instruction (adjust as needed)
                 await RisingEdge(dut.clk)
                 await debug_info(dut)
+                print("k: ", k)
         else:
-            for _ in range(4):  # Wait ~5 cycles per instruction (adjust as needed)
+            for j in range(4):  # Wait ~5 cycles per instruction (adjust as needed)
                 await RisingEdge(dut.clk)
                 await debug_info(dut)
+                print("j: ", j)
 
         line = f"After {instruction_log[i]}:\n"
-        for reg_idx in range(11):  # Just dump x0 to x10 for your use case
+        for reg_idx in range(14):  # Just dump x0 to x10 for your use case
             reg_val = int(dut.rv_multi.DP.rf.registers_debug[reg_idx].value)
             line += f"x{reg_idx:>2} = 0x{reg_val:08X}\n"
         line += "\n"
