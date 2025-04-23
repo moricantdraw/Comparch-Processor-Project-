@@ -4,11 +4,10 @@ VERILOG_SOURCES += $(PWD)/top.sv
 
 TOPLEVEL = top
 MODULE = test_top
-# MODULE = test_top
-MODULE = test_final
+
 
 # Use a more direct approach for Mac with conda environment
-PYTHON_BIN ?= /Applications/oss-cad-suite/bin/tabbypy3
+PYTHON_BIN ?= /usr/local/Caskroom/miniconda/base/envs/comparch/bin/python
 COCOTB_HDL_TIMEUNIT = 1ns
 COCOTB_HDL_TIMEPRECISION = 1ps
 
