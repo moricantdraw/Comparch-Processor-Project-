@@ -1,0 +1,512 @@
+rm -f results.xml
+"/Library/Developer/CommandLineTools/usr/bin/make" -f Makefile results.xml
+rm -f results.xml
+MODULE=test_top TESTCASE= TOPLEVEL=top TOPLEVEL_LANG=verilog \
+         /usr/local/bin/vvp -M /usr/local/Caskroom/miniconda/base/envs/comparch/lib/python3.13/site-packages/cocotb/libs -m libcocotbvpi_icarus   sim_build/sim.vvp  
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:81   in set_program_name_in_venv        Did not detect Python virtual environment. Using system-wide Python interpreter
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:101  in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 12.0 (stable)
+     0.00ns INFO     cocotb                             Running tests with cocotb v1.9.2 from /usr/local/Caskroom/miniconda/base/envs/comparch/lib/python3.13/site-packages/cocotb
+     0.00ns INFO     cocotb                             Seeding Python random module with 1745413067
+     0.00ns INFO     cocotb.regression                  Found test test_top.check_register_values
+     0.00ns INFO     cocotb.regression                  running check_register_values (1/1)
+    20.00ns INFO     cocotb                             ---------------------------------------------------
+    20.00ns INFO     cocotb                             PC: 00000000, oldPC: 00000000, Instr: 00000000
+    20.00ns INFO     cocotb                             state: 0
+    20.00ns INFO     cocotb                             next: 1
+    20.00ns INFO     cocotb                             opcode: 0000000
+    20.00ns INFO     cocotb                             ---------
+    20.00ns INFO     cocotb.top                         readdata: 0xABCDE0B7
+    20.00ns INFO     cocotb                             memwrite: 0
+    20.00ns INFO     cocotb                             writedata: 0x0
+    20.00ns INFO     cocotb.top                         adr: 0x0
+    30.00ns INFO     cocotb                             ---------------------------------------------------
+    30.00ns INFO     cocotb                             PC: 00000004, oldPC: 00000000, Instr: abcde0b7
+    30.00ns INFO     cocotb                             state: 1
+    30.00ns INFO     cocotb                             next: 12
+    30.00ns INFO     cocotb                             opcode: 0110111
+    30.00ns INFO     cocotb                             ---------
+    30.00ns INFO     cocotb.top                         readdata: 0xABCDE0B7
+    30.00ns INFO     cocotb                             memwrite: 0
+    30.00ns INFO     cocotb                             writedata: 0x0
+    30.00ns INFO     cocotb.top                         adr: 0x4
+    40.00ns INFO     cocotb                             ---------------------------------------------------
+    40.00ns INFO     cocotb                             PC: 00000004, oldPC: 00000000, Instr: abcde0b7
+    40.00ns INFO     cocotb                             state: 12
+    40.00ns INFO     cocotb                             next: 0
+    40.00ns INFO     cocotb                             opcode: 0110111
+    40.00ns INFO     cocotb                             ---------
+    40.00ns INFO     cocotb.top                         readdata: 0xFF123117
+    40.00ns INFO     cocotb                             memwrite: 0
+    40.00ns INFO     cocotb                             writedata: 0x0
+    40.00ns INFO     cocotb.top                         adr: 0x4
+    50.00ns INFO     cocotb                             ---------------------------------------------------
+    50.00ns INFO     cocotb                             PC: 00000004, oldPC: 00000000, Instr: abcde0b7
+    50.00ns INFO     cocotb                             state: 0
+    50.00ns INFO     cocotb                             next: 1
+    50.00ns INFO     cocotb                             opcode: 0110111
+    50.00ns INFO     cocotb                             ---------
+    50.00ns INFO     cocotb.top                         readdata: 0xFF123117
+    50.00ns INFO     cocotb                             memwrite: 0
+    50.00ns INFO     cocotb                             writedata: 0x0
+    50.00ns INFO     cocotb.top                         adr: 0x4
+    60.00ns INFO     cocotb                             ---------------------------------------------------
+    60.00ns INFO     cocotb                             PC: 00000008, oldPC: 00000004, Instr: ff123117
+    60.00ns INFO     cocotb                             state: 1
+    60.00ns INFO     cocotb                             next: 11
+    60.00ns INFO     cocotb                             opcode: 0010111
+    60.00ns INFO     cocotb                             ---------
+    60.00ns INFO     cocotb.top                         readdata: 0xFF123117
+    60.00ns INFO     cocotb                             memwrite: 0
+    60.00ns INFO     cocotb                             writedata: 0x0
+    60.00ns INFO     cocotb.top                         adr: 0x8
+    70.00ns INFO     cocotb                             ---------------------------------------------------
+    70.00ns INFO     cocotb                             PC: 00000008, oldPC: 00000004, Instr: ff123117
+    70.00ns INFO     cocotb                             state: 11
+    70.00ns INFO     cocotb                             next: 7
+    70.00ns INFO     cocotb                             opcode: 0010111
+    70.00ns INFO     cocotb                             ---------
+    70.00ns INFO     cocotb.top                         readdata: 0x3E800193
+    70.00ns INFO     cocotb                             memwrite: 0
+    70.00ns INFO     cocotb                             writedata: 0x0
+    70.00ns INFO     cocotb.top                         adr: 0x8
+    80.00ns INFO     cocotb                             ---------------------------------------------------
+    80.00ns INFO     cocotb                             PC: 00000008, oldPC: 00000004, Instr: ff123117
+    80.00ns INFO     cocotb                             state: 7
+    80.00ns INFO     cocotb                             next: 0
+    80.00ns INFO     cocotb                             opcode: 0010111
+    80.00ns INFO     cocotb                             ---------
+    80.00ns INFO     cocotb.top                         readdata: 0x3E800193
+    80.00ns INFO     cocotb                             memwrite: 0
+    80.00ns INFO     cocotb                             writedata: 0x0
+    80.00ns INFO     cocotb.top                         adr: 0x8
+    90.00ns INFO     cocotb                             ---------------------------------------------------
+    90.00ns INFO     cocotb                             PC: 00000008, oldPC: 00000004, Instr: ff123117
+    90.00ns INFO     cocotb                             state: 0
+    90.00ns INFO     cocotb                             next: 1
+    90.00ns INFO     cocotb                             opcode: 0010111
+    90.00ns INFO     cocotb                             ---------
+    90.00ns INFO     cocotb.top                         readdata: 0x3E800193
+    90.00ns INFO     cocotb                             memwrite: 0
+    90.00ns INFO     cocotb                             writedata: 0x0
+    90.00ns INFO     cocotb.top                         adr: 0x8
+   100.00ns INFO     cocotb                             ---------------------------------------------------
+   100.00ns INFO     cocotb                             PC: 0000000c, oldPC: 00000008, Instr: 3e800193
+   100.00ns INFO     cocotb                             state: 1
+   100.00ns INFO     cocotb                             next: 8
+   100.00ns INFO     cocotb                             opcode: 0010011
+   100.00ns INFO     cocotb                             ---------
+   100.00ns INFO     cocotb.top                         readdata: 0x3E800193
+   100.00ns INFO     cocotb                             memwrite: 0
+   100.00ns INFO     cocotb                             writedata: 0x0
+   100.00ns INFO     cocotb.top                         adr: 0xC
+   110.00ns INFO     cocotb                             ---------------------------------------------------
+   110.00ns INFO     cocotb                             PC: 0000000c, oldPC: 00000008, Instr: 3e800193
+   110.00ns INFO     cocotb                             state: 8
+   110.00ns INFO     cocotb                             next: 7
+   110.00ns INFO     cocotb                             opcode: 0010011
+   110.00ns INFO     cocotb                             ---------
+   110.00ns INFO     cocotb.top                         readdata: 0xF01E213
+   110.00ns INFO     cocotb                             memwrite: 0
+   110.00ns INFO     cocotb                             writedata: 0x0
+   110.00ns INFO     cocotb.top                         adr: 0xC
+   120.00ns INFO     cocotb                             ---------------------------------------------------
+   120.00ns INFO     cocotb                             PC: 0000000c, oldPC: 00000008, Instr: 3e800193
+   120.00ns INFO     cocotb                             state: 7
+   120.00ns INFO     cocotb                             next: 0
+   120.00ns INFO     cocotb                             opcode: 0010011
+   120.00ns INFO     cocotb                             ---------
+   120.00ns INFO     cocotb.top                         readdata: 0xF01E213
+   120.00ns INFO     cocotb                             memwrite: 0
+   120.00ns INFO     cocotb                             writedata: 0x0
+   120.00ns INFO     cocotb.top                         adr: 0xC
+   130.00ns INFO     cocotb                             ---------------------------------------------------
+   130.00ns INFO     cocotb                             PC: 0000000c, oldPC: 00000008, Instr: 3e800193
+   130.00ns INFO     cocotb                             state: 0
+   130.00ns INFO     cocotb                             next: 1
+   130.00ns INFO     cocotb                             opcode: 0010011
+   130.00ns INFO     cocotb                             ---------
+   130.00ns INFO     cocotb.top                         readdata: 0xF01E213
+   130.00ns INFO     cocotb                             memwrite: 0
+   130.00ns INFO     cocotb                             writedata: 0x0
+   130.00ns INFO     cocotb.top                         adr: 0xC
+   140.00ns INFO     cocotb                             ---------------------------------------------------
+   140.00ns INFO     cocotb                             PC: 00000010, oldPC: 0000000c, Instr: 0f01e213
+   140.00ns INFO     cocotb                             state: 1
+   140.00ns INFO     cocotb                             next: 8
+   140.00ns INFO     cocotb                             opcode: 0010011
+   140.00ns INFO     cocotb                             ---------
+   140.00ns INFO     cocotb.top                         readdata: 0xF01E213
+   140.00ns INFO     cocotb                             memwrite: 0
+   140.00ns INFO     cocotb                             writedata: 0x0
+   140.00ns INFO     cocotb.top                         adr: 0x10
+   150.00ns INFO     cocotb                             ---------------------------------------------------
+   150.00ns INFO     cocotb                             PC: 00000010, oldPC: 0000000c, Instr: 0f01e213
+   150.00ns INFO     cocotb                             state: 8
+   150.00ns INFO     cocotb                             next: 7
+   150.00ns INFO     cocotb                             opcode: 0010011
+   150.00ns INFO     cocotb                             ---------
+   150.00ns INFO     cocotb.top                         readdata: 0x219293
+   150.00ns INFO     cocotb                             memwrite: 0
+   150.00ns INFO     cocotb                             writedata: 0x0
+   150.00ns INFO     cocotb.top                         adr: 0x10
+   160.00ns INFO     cocotb                             ---------------------------------------------------
+   160.00ns INFO     cocotb                             PC: 00000010, oldPC: 0000000c, Instr: 0f01e213
+   160.00ns INFO     cocotb                             state: 7
+   160.00ns INFO     cocotb                             next: 0
+   160.00ns INFO     cocotb                             opcode: 0010011
+   160.00ns INFO     cocotb                             ---------
+   160.00ns INFO     cocotb.top                         readdata: 0x219293
+   160.00ns INFO     cocotb                             memwrite: 0
+   160.00ns INFO     cocotb                             writedata: 0x0
+   160.00ns INFO     cocotb.top                         adr: 0x10
+   170.00ns INFO     cocotb                             ---------------------------------------------------
+   170.00ns INFO     cocotb                             PC: 00000010, oldPC: 0000000c, Instr: 0f01e213
+   170.00ns INFO     cocotb                             state: 0
+   170.00ns INFO     cocotb                             next: 1
+   170.00ns INFO     cocotb                             opcode: 0010011
+   170.00ns INFO     cocotb                             ---------
+   170.00ns INFO     cocotb.top                         readdata: 0x219293
+   170.00ns INFO     cocotb                             memwrite: 0
+   170.00ns INFO     cocotb                             writedata: 0x0
+   170.00ns INFO     cocotb.top                         adr: 0x10
+   180.00ns INFO     cocotb                             ---------------------------------------------------
+   180.00ns INFO     cocotb                             PC: 00000014, oldPC: 00000010, Instr: 00219293
+   180.00ns INFO     cocotb                             state: 1
+   180.00ns INFO     cocotb                             next: 8
+   180.00ns INFO     cocotb                             opcode: 0010011
+   180.00ns INFO     cocotb                             ---------
+   180.00ns INFO     cocotb.top                         readdata: 0x219293
+   180.00ns INFO     cocotb                             memwrite: 0
+   180.00ns INFO     cocotb                             writedata: 0x0
+   180.00ns INFO     cocotb.top                         adr: 0x14
+   190.00ns INFO     cocotb                             ---------------------------------------------------
+   190.00ns INFO     cocotb                             PC: 00000014, oldPC: 00000010, Instr: 00219293
+   190.00ns INFO     cocotb                             state: 8
+   190.00ns INFO     cocotb                             next: 7
+   190.00ns INFO     cocotb                             opcode: 0010011
+   190.00ns INFO     cocotb                             ---------
+   190.00ns INFO     cocotb.top                         readdata: 0x51A023
+   190.00ns INFO     cocotb                             memwrite: 0
+   190.00ns INFO     cocotb                             writedata: 0xFF123004
+   190.00ns INFO     cocotb.top                         adr: 0x14
+   200.00ns INFO     cocotb                             ---------------------------------------------------
+   200.00ns INFO     cocotb                             PC: 00000014, oldPC: 00000010, Instr: 00219293
+   200.00ns INFO     cocotb                             state: 7
+   200.00ns INFO     cocotb                             next: 0
+   200.00ns INFO     cocotb                             opcode: 0010011
+   200.00ns INFO     cocotb                             ---------
+   200.00ns INFO     cocotb.top                         readdata: 0x51A023
+   200.00ns INFO     cocotb                             memwrite: 0
+   200.00ns INFO     cocotb                             writedata: 0xFF123004
+   200.00ns INFO     cocotb.top                         adr: 0x14
+   210.00ns INFO     cocotb                             ---------------------------------------------------
+   210.00ns INFO     cocotb                             PC: 00000014, oldPC: 00000010, Instr: 00219293
+   210.00ns INFO     cocotb                             state: 0
+   210.00ns INFO     cocotb                             next: 1
+   210.00ns INFO     cocotb                             opcode: 0010011
+   210.00ns INFO     cocotb                             ---------
+   210.00ns INFO     cocotb.top                         readdata: 0x51A023
+   210.00ns INFO     cocotb                             memwrite: 0
+   210.00ns INFO     cocotb                             writedata: 0xFF123004
+   210.00ns INFO     cocotb.top                         adr: 0x14
+   220.00ns INFO     cocotb                             ---------------------------------------------------
+   220.00ns INFO     cocotb                             PC: 00000018, oldPC: 00000014, Instr: 0051a023
+   220.00ns INFO     cocotb                             state: 1
+   220.00ns INFO     cocotb                             next: 2
+   220.00ns INFO     cocotb                             opcode: 0100011
+   220.00ns INFO     cocotb                             ---------
+   220.00ns INFO     cocotb.top                         readdata: 0x51A023
+   220.00ns INFO     cocotb                             memwrite: 0
+   220.00ns INFO     cocotb                             writedata: 0xFF123004
+   220.00ns INFO     cocotb.top                         adr: 0x18
+   230.00ns INFO     cocotb                             ---------------------------------------------------
+   230.00ns INFO     cocotb                             PC: 00000018, oldPC: 00000014, Instr: 0051a023
+   230.00ns INFO     cocotb                             state: 2
+   230.00ns INFO     cocotb                             next: 5
+   230.00ns INFO     cocotb                             opcode: 0100011
+   230.00ns INFO     cocotb                             ---------
+   230.00ns INFO     cocotb.top                         readdata: 0x1A303
+   230.00ns INFO     cocotb                             memwrite: 0
+   230.00ns INFO     cocotb                             writedata: 0xFA0
+   230.00ns INFO     cocotb.top                         adr: 0x18
+   240.00ns INFO     cocotb                             ---------------------------------------------------
+   240.00ns INFO     cocotb                             PC: 00000018, oldPC: 00000014, Instr: 0051a023
+   240.00ns INFO     cocotb                             state: 5
+   240.00ns INFO     cocotb                             next: 0
+   240.00ns INFO     cocotb                             opcode: 0100011
+   240.00ns INFO     cocotb                             ---------
+   240.00ns INFO     cocotb.top                         readdata: 0x1A303
+   240.00ns INFO     cocotb                             memwrite: 1
+   240.00ns INFO     cocotb                             writedata: 0xFA0
+   240.00ns INFO     cocotb.top                         adr: 0x3E8
+   250.00ns INFO     cocotb                             ---------------------------------------------------
+   250.00ns INFO     cocotb                             PC: 00000018, oldPC: 00000014, Instr: 0051a023
+   250.00ns INFO     cocotb                             state: 0
+   250.00ns INFO     cocotb                             next: 1
+   250.00ns INFO     cocotb                             opcode: 0100011
+   250.00ns INFO     cocotb                             ---------
+   250.00ns INFO     cocotb.top                         readdata: 0x1A303
+   250.00ns INFO     cocotb                             memwrite: 0
+   250.00ns INFO     cocotb                             writedata: 0xFA0
+   250.00ns INFO     cocotb.top                         adr: 0x18
+   260.00ns INFO     cocotb                             ---------------------------------------------------
+   260.00ns INFO     cocotb                             PC: 0000001c, oldPC: 00000018, Instr: 0001a303
+   260.00ns INFO     cocotb                             state: 1
+   260.00ns INFO     cocotb                             next: 2
+   260.00ns INFO     cocotb                             opcode: 0000011
+   260.00ns INFO     cocotb                             ---------
+   260.00ns INFO     cocotb.top                         readdata: 0x1A303
+   260.00ns INFO     cocotb                             memwrite: 0
+   260.00ns INFO     cocotb                             writedata: 0xFA0
+   260.00ns INFO     cocotb.top                         adr: 0x1C
+   270.00ns INFO     cocotb                             ---------------------------------------------------
+   270.00ns INFO     cocotb                             PC: 0000001c, oldPC: 00000018, Instr: 0001a303
+   270.00ns INFO     cocotb                             state: 2
+   270.00ns INFO     cocotb                             next: 3
+   270.00ns INFO     cocotb                             opcode: 0000011
+   270.00ns INFO     cocotb                             ---------
+   270.00ns INFO     cocotb.top                         readdata: 0x6283B3
+   270.00ns INFO     cocotb                             memwrite: 0
+   270.00ns INFO     cocotb                             writedata: 0x0
+   270.00ns INFO     cocotb.top                         adr: 0x1C
+   280.00ns INFO     cocotb                             ---------------------------------------------------
+   280.00ns INFO     cocotb                             PC: 0000001c, oldPC: 00000018, Instr: 0001a303
+   280.00ns INFO     cocotb                             state: 3
+   280.00ns INFO     cocotb                             next: 4
+   280.00ns INFO     cocotb                             opcode: 0000011
+   280.00ns INFO     cocotb                             ---------
+   280.00ns INFO     cocotb.top                         readdata: 0x6283B3
+   280.00ns INFO     cocotb                             memwrite: 0
+   280.00ns INFO     cocotb                             writedata: 0x0
+   280.00ns INFO     cocotb.top                         adr: 0x3E8
+   290.00ns INFO     cocotb                             ---------------------------------------------------
+   290.00ns INFO     cocotb                             PC: 0000001c, oldPC: 00000018, Instr: 0001a303
+   290.00ns INFO     cocotb                             state: 4
+   290.00ns INFO     cocotb                             next: 0
+   290.00ns INFO     cocotb                             opcode: 0000011
+   290.00ns INFO     cocotb                             ---------
+   290.00ns INFO     cocotb.top                         readdata: 0xFA0
+   290.00ns INFO     cocotb                             memwrite: 0
+   290.00ns INFO     cocotb                             writedata: 0x0
+   290.00ns INFO     cocotb.top                         adr: 0x1C
+   300.00ns INFO     cocotb                             ---------------------------------------------------
+   300.00ns INFO     cocotb                             PC: 0000001c, oldPC: 00000018, Instr: 0001a303
+   300.00ns INFO     cocotb                             state: 0
+   300.00ns INFO     cocotb                             next: 1
+   300.00ns INFO     cocotb                             opcode: 0000011
+   300.00ns INFO     cocotb                             ---------
+   300.00ns INFO     cocotb.top                         readdata: 0x6283B3
+   300.00ns INFO     cocotb                             memwrite: 0
+   300.00ns INFO     cocotb                             writedata: 0x0
+   300.00ns INFO     cocotb.top                         adr: 0x1C
+   310.00ns INFO     cocotb                             ---------------------------------------------------
+   310.00ns INFO     cocotb                             PC: 00000020, oldPC: 0000001c, Instr: 006283b3
+   310.00ns INFO     cocotb                             state: 1
+   310.00ns INFO     cocotb                             next: 6
+   310.00ns INFO     cocotb                             opcode: 0110011
+   310.00ns INFO     cocotb                             ---------
+   310.00ns INFO     cocotb.top                         readdata: 0x6283B3
+   310.00ns INFO     cocotb                             memwrite: 0
+   310.00ns INFO     cocotb                             writedata: 0x0
+   310.00ns INFO     cocotb.top                         adr: 0x20
+   320.00ns INFO     cocotb                             ---------------------------------------------------
+   320.00ns INFO     cocotb                             PC: 00000020, oldPC: 0000001c, Instr: 006283b3
+   320.00ns INFO     cocotb                             state: 6
+   320.00ns INFO     cocotb                             next: 7
+   320.00ns INFO     cocotb                             opcode: 0110011
+   320.00ns INFO     cocotb                             ---------
+   320.00ns INFO     cocotb.top                         readdata: 0x738463
+   320.00ns INFO     cocotb                             memwrite: 0
+   320.00ns INFO     cocotb                             writedata: 0xFA0
+   320.00ns INFO     cocotb.top                         adr: 0x20
+   330.00ns INFO     cocotb                             ---------------------------------------------------
+   330.00ns INFO     cocotb                             PC: 00000020, oldPC: 0000001c, Instr: 006283b3
+   330.00ns INFO     cocotb                             state: 7
+   330.00ns INFO     cocotb                             next: 0
+   330.00ns INFO     cocotb                             opcode: 0110011
+   330.00ns INFO     cocotb                             ---------
+   330.00ns INFO     cocotb.top                         readdata: 0x738463
+   330.00ns INFO     cocotb                             memwrite: 0
+   330.00ns INFO     cocotb                             writedata: 0xFA0
+   330.00ns INFO     cocotb.top                         adr: 0x20
+   340.00ns INFO     cocotb                             ---------------------------------------------------
+   340.00ns INFO     cocotb                             PC: 00000020, oldPC: 0000001c, Instr: 006283b3
+   340.00ns INFO     cocotb                             state: 0
+   340.00ns INFO     cocotb                             next: 1
+   340.00ns INFO     cocotb                             opcode: 0110011
+   340.00ns INFO     cocotb                             ---------
+   340.00ns INFO     cocotb.top                         readdata: 0x738463
+   340.00ns INFO     cocotb                             memwrite: 0
+   340.00ns INFO     cocotb                             writedata: 0xFA0
+   340.00ns INFO     cocotb.top                         adr: 0x20
+   350.00ns INFO     cocotb                             ---------------------------------------------------
+   350.00ns INFO     cocotb                             PC: 00000024, oldPC: 00000020, Instr: 00738463
+   350.00ns INFO     cocotb                             state: 1
+   350.00ns INFO     cocotb                             next: 10
+   350.00ns INFO     cocotb                             opcode: 1100011
+   350.00ns INFO     cocotb                             ---------
+   350.00ns INFO     cocotb.top                         readdata: 0x738463
+   350.00ns INFO     cocotb                             memwrite: 0
+   350.00ns INFO     cocotb                             writedata: 0xFA0
+   350.00ns INFO     cocotb.top                         adr: 0x24
+   360.00ns INFO     cocotb                             ---------------------------------------------------
+   360.00ns INFO     cocotb                             PC: 00000024, oldPC: 00000020, Instr: 00738463
+   360.00ns INFO     cocotb                             state: 10
+   360.00ns INFO     cocotb                             next: 15
+   360.00ns INFO     cocotb                             opcode: 1100011
+   360.00ns INFO     cocotb                             ---------
+   360.00ns INFO     cocotb.top                         readdata: 0x7B00413
+   360.00ns INFO     cocotb                             memwrite: 0
+   360.00ns INFO     cocotb                             writedata: 0x1F40
+   360.00ns INFO     cocotb.top                         adr: 0x24
+   370.00ns INFO     cocotb                             ---------------------------------------------------
+   370.00ns INFO     cocotb                             PC: 00000028, oldPC: 00000020, Instr: 00738463
+   370.00ns INFO     cocotb                             state: 15
+   370.00ns INFO     cocotb                             next: 0
+   370.00ns INFO     cocotb                             opcode: 1100011
+   370.00ns INFO     cocotb                             ---------
+   370.00ns INFO     cocotb.top                         readdata: 0x7B00413
+   370.00ns INFO     cocotb                             memwrite: 0
+   370.00ns INFO     cocotb                             writedata: 0x1F40
+   370.00ns INFO     cocotb.top                         adr: 0x28
+   380.00ns INFO     cocotb                             ---------------------------------------------------
+   380.00ns INFO     cocotb                             PC: 00000028, oldPC: 00000020, Instr: 00738463
+   380.00ns INFO     cocotb                             state: 0
+   380.00ns INFO     cocotb                             next: 1
+   380.00ns INFO     cocotb                             opcode: 1100011
+   380.00ns INFO     cocotb                             ---------
+   380.00ns INFO     cocotb.top                         readdata: 0x1C800413
+   380.00ns INFO     cocotb                             memwrite: 0
+   380.00ns INFO     cocotb                             writedata: 0x1F40
+   380.00ns INFO     cocotb.top                         adr: 0x28
+   390.00ns INFO     cocotb                             ---------------------------------------------------
+   390.00ns INFO     cocotb                             PC: 0000002c, oldPC: 00000028, Instr: 1c800413
+   390.00ns INFO     cocotb                             state: 1
+   390.00ns INFO     cocotb                             next: 8
+   390.00ns INFO     cocotb                             opcode: 0010011
+   390.00ns INFO     cocotb                             ---------
+   390.00ns INFO     cocotb.top                         readdata: 0x1C800413
+   390.00ns INFO     cocotb                             memwrite: 0
+   390.00ns INFO     cocotb                             writedata: 0x1F40
+   390.00ns INFO     cocotb.top                         adr: 0x2C
+   400.00ns INFO     cocotb                             ---------------------------------------------------
+   400.00ns INFO     cocotb                             PC: 0000002c, oldPC: 00000028, Instr: 1c800413
+   400.00ns INFO     cocotb                             state: 8
+   400.00ns INFO     cocotb                             next: 7
+   400.00ns INFO     cocotb                             opcode: 0010011
+   400.00ns INFO     cocotb                             ---------
+   400.00ns INFO     cocotb.top                         readdata: 0x8004EF
+   400.00ns INFO     cocotb                             memwrite: 0
+   400.00ns INFO     cocotb                             writedata: 0x0
+   400.00ns INFO     cocotb.top                         adr: 0x2C
+   410.00ns INFO     cocotb                             ---------------------------------------------------
+   410.00ns INFO     cocotb                             PC: 0000002c, oldPC: 00000028, Instr: 1c800413
+   410.00ns INFO     cocotb                             state: 7
+   410.00ns INFO     cocotb                             next: 0
+   410.00ns INFO     cocotb                             opcode: 0010011
+   410.00ns INFO     cocotb                             ---------
+   410.00ns INFO     cocotb.top                         readdata: 0x8004EF
+   410.00ns INFO     cocotb                             memwrite: 0
+   410.00ns INFO     cocotb                             writedata: 0x0
+   410.00ns INFO     cocotb.top                         adr: 0x2C
+   420.00ns INFO     cocotb                             ---------------------------------------------------
+   420.00ns INFO     cocotb                             PC: 0000002c, oldPC: 00000028, Instr: 1c800413
+   420.00ns INFO     cocotb                             state: 0
+   420.00ns INFO     cocotb                             next: 1
+   420.00ns INFO     cocotb                             opcode: 0010011
+   420.00ns INFO     cocotb                             ---------
+   420.00ns INFO     cocotb.top                         readdata: 0x8004EF
+   420.00ns INFO     cocotb                             memwrite: 0
+   420.00ns INFO     cocotb                             writedata: 0x0
+   420.00ns INFO     cocotb.top                         adr: 0x2C
+   430.00ns INFO     cocotb                             ---------------------------------------------------
+   430.00ns INFO     cocotb                             PC: 00000030, oldPC: 0000002c, Instr: 008004ef
+   430.00ns INFO     cocotb                             state: 1
+   430.00ns INFO     cocotb                             next: 9
+   430.00ns INFO     cocotb                             opcode: 1101111
+   430.00ns INFO     cocotb                             ---------
+   430.00ns INFO     cocotb.top                         readdata: 0x8004EF
+   430.00ns INFO     cocotb                             memwrite: 0
+   430.00ns INFO     cocotb                             writedata: 0x1C8
+   430.00ns INFO     cocotb.top                         adr: 0x30
+   440.00ns INFO     cocotb                             ---------------------------------------------------
+   440.00ns INFO     cocotb                             PC: 00000030, oldPC: 0000002c, Instr: 008004ef
+   440.00ns INFO     cocotb                             state: 9
+   440.00ns INFO     cocotb                             next: 7
+   440.00ns INFO     cocotb                             opcode: 1101111
+   440.00ns INFO     cocotb                             ---------
+   440.00ns INFO     cocotb.top                         readdata: 0x31500413
+   440.00ns INFO     cocotb                             memwrite: 0
+   440.00ns INFO     cocotb                             writedata: 0x1C8
+   440.00ns INFO     cocotb.top                         adr: 0x30
+   450.00ns INFO     cocotb                             ---------------------------------------------------
+   450.00ns INFO     cocotb                             PC: 00000034, oldPC: 0000002c, Instr: 008004ef
+   450.00ns INFO     cocotb                             state: 7
+   450.00ns INFO     cocotb                             next: 0
+   450.00ns INFO     cocotb                             opcode: 1101111
+   450.00ns INFO     cocotb                             ---------
+   450.00ns INFO     cocotb.top                         readdata: 0x31500413
+   450.00ns INFO     cocotb                             memwrite: 0
+   450.00ns INFO     cocotb                             writedata: 0x1C8
+   450.00ns INFO     cocotb.top                         adr: 0x34
+   460.00ns INFO     cocotb                             ---------------------------------------------------
+   460.00ns INFO     cocotb                             PC: 00000034, oldPC: 0000002c, Instr: 008004ef
+   460.00ns INFO     cocotb                             state: 0
+   460.00ns INFO     cocotb                             next: 1
+   460.00ns INFO     cocotb                             opcode: 1101111
+   460.00ns INFO     cocotb                             ---------
+   460.00ns INFO     cocotb.top                         readdata: 0x14100513
+   460.00ns INFO     cocotb                             memwrite: 0
+   460.00ns INFO     cocotb                             writedata: 0x1C8
+   460.00ns INFO     cocotb.top                         adr: 0x34
+   470.00ns INFO     cocotb                             ---------------------------------------------------
+   470.00ns INFO     cocotb                             PC: 00000038, oldPC: 00000034, Instr: 14100513
+   470.00ns INFO     cocotb                             state: 1
+   470.00ns INFO     cocotb                             next: 8
+   470.00ns INFO     cocotb                             opcode: 0010011
+   470.00ns INFO     cocotb                             ---------
+   470.00ns INFO     cocotb.top                         readdata: 0x14100513
+   470.00ns INFO     cocotb                             memwrite: 0
+   470.00ns INFO     cocotb                             writedata: 0x1C8
+   470.00ns INFO     cocotb.top                         adr: 0x38
+   480.00ns INFO     cocotb                             ---------------------------------------------------
+   480.00ns INFO     cocotb                             PC: 00000038, oldPC: 00000034, Instr: 14100513
+   480.00ns INFO     cocotb                             state: 8
+   480.00ns INFO     cocotb                             next: 7
+   480.00ns INFO     cocotb                             opcode: 0010011
+   480.00ns INFO     cocotb                             ---------
+   480.00ns INFO     cocotb.top                         readdata: 0x13
+   480.00ns INFO     cocotb                             memwrite: 0
+   480.00ns INFO     cocotb                             writedata: 0xABCDE000
+   480.00ns INFO     cocotb.top                         adr: 0x38
+   490.00ns INFO     cocotb                             ---------------------------------------------------
+   490.00ns INFO     cocotb                             PC: 00000038, oldPC: 00000034, Instr: 14100513
+   490.00ns INFO     cocotb                             state: 7
+   490.00ns INFO     cocotb                             next: 0
+   490.00ns INFO     cocotb                             opcode: 0010011
+   490.00ns INFO     cocotb                             ---------
+   490.00ns INFO     cocotb.top                         readdata: 0x13
+   490.00ns INFO     cocotb                             memwrite: 0
+   490.00ns INFO     cocotb                             writedata: 0xABCDE000
+   490.00ns INFO     cocotb.top                         adr: 0x38
+   500.00ns INFO     cocotb                             ---------------------------------------------------
+   500.00ns INFO     cocotb                             PC: 00000038, oldPC: 00000034, Instr: 14100513
+   500.00ns INFO     cocotb                             state: 0
+   500.00ns INFO     cocotb                             next: 1
+   500.00ns INFO     cocotb                             opcode: 0010011
+   500.00ns INFO     cocotb                             ---------
+   500.00ns INFO     cocotb.top                         readdata: 0x13
+   500.00ns INFO     cocotb                             memwrite: 0
+   500.00ns INFO     cocotb                             writedata: 0xABCDE000
+   500.00ns INFO     cocotb.top                         adr: 0x38
+   500.00ns INFO     cocotb.top                         Register dump saved to register_dump.txt
+   500.00ns INFO     cocotb.top                         ALL REGISTERS CORRECT
+   500.00ns INFO     cocotb.regression                  check_register_values passed
+   500.00ns INFO     cocotb.regression                  ****************************************************************************************
+                                                        ** TEST                            STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ****************************************************************************************
+                                                        ** test_top.check_register_values   PASS         500.00           0.02      20558.54  **
+                                                        ****************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                  500.00           0.05      10264.63  **
+                                                        ****************************************************************************************

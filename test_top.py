@@ -4,45 +4,23 @@ from cocotb.clock import Clock
 import os
 
 # Expected comments for each PC step
-# instruction_log = [
-#     "lui   x1, 0x1",
-#     "auipc x2, 0x0",
-#     "addi  x3, x0, 5",
-#     "andi  x4, x3, 3",
-#     "slli  x5, x3, 1",
-#     "sw    x5, 0(x0)",
-#     "lw    x6, 0(x0)",
-#     "add   x7, x3, x6",
-#     "beq   x3, x3, +8",
-#     "addi  x8, x0, 99",
-#     "addi  x8, x0, 2",
-#     "jal   x9, +8",
-#     "addi  x8, x0, 3",
-#     "addi  x10, x0, 7"
-# ]
-    # "beq   x5, x7, S1",         # should skip next ADDI
-    # "addi  x5, x5, 5",          # skipped, x5 remains 2
-    # "S1:   addi x11, x0, 80",   # pc = 0x30, x11 = 80
-
 instruction_log = [
-    "lui   x1, 0xFEDCC",        # pc = 0x00, x1 = 0xFEDCC000
-    "addi  x1, x1, 0xA98",      # pc = 0x04, x1 = 0xFEDCBA98
-    "srli  x2, x1, 4",          # pc = 0x08, x2 = 0x0FEDCBA9
-    "srai  x3, x1, 4",          # pc = 0x0C, x3 = 0xFFEDCBA9
-    "xori  x4, x3, -1",         # pc = 0x10, x4 = 0x00123456
-    "addi  x5, x0, 2",          # pc = 0x14, x5 = 0x00000002
-    "add   x6, x5, x4",         # pc = 0x18, x6 = 0x00123458
-    "sub   x7, x6, x4",         # pc = 0x1C, x7 = 0x00000002
-    "sll   x8, x4, x5",         # pc = 0x20, x8 = 0x0048D158
-    "ori   x9, x8, 7",          # pc = 0x24, x9 = 0x0048D15F
-    "auipc x10, 0x12345",       # pc = 0x28, x10 = 0x12345028
-    "addi  x11, x0, 80",        # oc = 0x2C, x11 = 0x00000050
-    "sw    x4, 0(x11)",         # pc = 0x30, Mem[80] = x4
-    "lw    x12, 0(x11)",        # pc = 0x34, x12 = Mem[80]
-    "beq   x5, x7, 12",            # pc = 0x38, x13 = pc + 4 = 0x3C
-   # addi x5, x0, 10            Should be skipped, x5 remains 2
-    "addi  x7, x0, 1022"        # pc = 0x44, x7 = 0x00000400
+    "lui   x1, 0xABCDE",        # pc = 0x00, x1 = 0xABCDE000
+    "auipc x2, 0xFF123",        # pc = 0x04, x2 = 0xFF123004
+    "addi  x3, x0, 1000",       # pc = 0x08, x3 = 0x000003E8
+    "ori   x4, x3, 0xF0",       # pc = 0x0C, x4 = 0x000003F8
+    "slli  x5, x3, 2",          # pc = 0x10, x5 = 0x00000FA0
+    "sw    x5, 0(x3)",          # pc = 0x14, Mem[0x3E8] = 0x00000FA0
+    "lw    x6, 0(x3)",          # pc = 0x18, x6 = 0x00000FA0
+    "add   x7, x5, x6",         # pc = 0x1C, x7 = 0x00001F40
+    "beq   x7, x7, SKIP",       # pc = 0x20, branch taken
+  # "addi  x8, x0, 123",        # pc = 0x24, skipped
+    "SKIP: addi x8, x0, 456",   # pc = 0x28, x8 = 0x000001C8
+    "jal   x9, END",            # pc = 0x2C, x9 = 0x00000030
+  # "addi  x8, x0, 789",        # pc = 0x30, skipped
+    "END:  addi x10, x0, 321",  # pc = 0x34, x10 = 0x00000141
 ]
+
 
 async def debug_info(dut):
     readdata = dut.ReadData.value
@@ -68,7 +46,7 @@ async def debug_info(dut):
     dut._log.info("adr: 0x%X", int(adr))
 
 @cocotb.test()
-async def dump_registers_test(dut):
+async def check_register_values(dut):
     # Start clock (assuming 10ns period)
     cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
 
@@ -78,26 +56,23 @@ async def dump_registers_test(dut):
         await RisingEdge(dut.clk)
     dut.rst.value = 0
 
-    # Dummy cycle to skip the first bogus fetch cycle
-    # await RisingEdge(dut.clk)
-
-    # Wait and dump registers after each instruction (11 in total)
+    # Wait and dump registers after each instruction
     output_lines = []
     for i in range(len(instruction_log)):
-        if instruction_log[i].startswith(("sw", "lw")):
-            for k in range(5):  # Wait ~5 cycles per instruction (adjust as needed)
+        if instruction_log[i].startswith("lw"):
+            for k in range(5):  # Wait 5 cycles for lw
                 await RisingEdge(dut.clk)
                 await debug_info(dut)
-                print("k: ", k)
         else:
-            for j in range(4):  # Wait ~5 cycles per instruction (adjust as needed)
+            for j in range(4):  # Wait 4 cycles for others
                 await RisingEdge(dut.clk)
                 await debug_info(dut)
-                print("j: ", j)
+
 
         line = f"After {instruction_log[i]}:\n"
-        for reg_idx in range(14):  # Just dump x0 to x10 for your use case
-            reg_val = int(dut.rv_multi.DP.rf.registers_debug[reg_idx].value)
+        regs = dut.rv_multi.DP.rf.registers_debug
+        for reg_idx in range(11):  # Just dump x0 to x10
+            reg_val = int(regs[reg_idx].value)
             line += f"x{reg_idx:>2} = 0x{reg_val:08X}\n"
         line += "\n"
         output_lines.append(line)
@@ -107,3 +82,22 @@ async def dump_registers_test(dut):
         f.writelines(output_lines)
 
     dut._log.info("Register dump saved to register_dump.txt")
+
+
+    def check(reg_idx, expected):
+        actual = int(regs[reg_idx].value)
+        assert actual == expected, \
+            f"Register x{reg_idx} expected {hex(expected)}, got {hex(actual)}"
+        
+    check(1,  0xABCDE000)
+    check(2,  0xFF123004)
+    check(3,  0x000003E8)
+    check(4,  0x000003F8)
+    check(5,  0x00000FA0)
+    check(6,  0x00000FA0)
+    check(7,  0x00001F40)
+    check(8,  0x000001C8)
+    check(9,  0x00000030)
+    check(10, 0x00000141)
+
+    dut._log.info("ALL REGISTERS CORRECT")

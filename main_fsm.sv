@@ -174,8 +174,8 @@ module main_fsm (
             s15: begin
                 // One extra state to allow branch PC target to get in place
                 branch    = 1'b1;
-                ALUSrcA   = 2'b10;
-                ALUOp     = 2'b01;
+                ALUSrcB   = 2'b01;
+                ALUSrcA   = 2'b01;
             end
         endcase
     end
