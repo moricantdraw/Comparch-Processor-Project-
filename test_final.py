@@ -3,7 +3,8 @@ from cocotb.triggers import RisingEdge, Timer
 from cocotb.clock import Clock
 
 @cocotb.test()
-async def test_final(dut):
+async def test_instruction_output(dut):
+    """ Test the instruction output of the processor."""
     # Start clock
     cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
     # Apply reset
@@ -15,8 +16,8 @@ async def test_final(dut):
     # One dummy cycle to allow memory to stabilize
     # await RisingEdge(dut.clk)
 
-    # Now start fetching
-    for _ in range(50):
+    # start fetching
+    for _ in range(20):
         await RisingEdge(dut.clk)
         instr = int(dut.rv_multi.DP.Instr.value)
         pc = int(dut.rv_multi.DP.PC.value)
@@ -75,7 +76,7 @@ async def test_first_instruction_fetch(dut):
     dut._log.info(f"Instruction fetched correctly: {instr_val:#010x}")
 
 @cocotb.test()
-async def test_instruction_sequence(dut):
+async def test_two_instruction_sequence(dut):
     """Check that two instructions (lui and addi) are correctly fetched and executed, with a bypass for the first fetch cycle."""
 
     # Start clock
@@ -130,36 +131,47 @@ async def test_instruction_sequence(dut):
     # let instruction execute
     for _ in range(3):
         await RisingEdge(dut.clk)
-        # state = dut.rv_multi.ControlUnit.MainFSM.state.value
-        # next = dut.rv_multi.ControlUnit.MainFSM.nextstate.value
-        # dut._log.info("state: %s", state)
-        # dut._log.info("next: %s", next)
-        # IRWrite = dut.rv_multi.IRWrite.value
-        # dut._log.info("IRWrite: %s", IRWrite)
-        # instr_val = int(dut.rv_multi.DP.Instr.value)
-        # dut._log.info("instr: 0x%08x", instr_val)
-        # opcode = dut.rv_multi.opcode.value
-        # dut._log.info("opcode: %s", opcode) 
-        # funct3 = dut.rv_multi.funct3.value
-        # dut._log.info("funct3: %s", funct3)
-        # PC = dut.rv_multi.DP.PC.value
-        # dut._log.info("PC: %s", PC)  
+        state = dut.rv_multi.ControlUnit.MainFSM.state.value
+        next = dut.rv_multi.ControlUnit.MainFSM.nextstate.value
+        dut._log.info("state: %s", state)
+        dut._log.info("next: %s", next)
+
+        IRWrite = dut.rv_multi.IRWrite.value
+        dut._log.info("IRWrite: %s", IRWrite)
+
+        instr_val = int(dut.rv_multi.DP.Instr.value)
+        dut._log.info("instr: 0x%08x", instr_val)
+
+        opcode = dut.rv_multi.opcode.value
+        dut._log.info("opcode: %s", opcode) 
+
+        funct3 = dut.rv_multi.funct3.value
+        dut._log.info("funct3: %s", funct3)
+
+        PC = dut.rv_multi.DP.PC.value
+        dut._log.info("PC: %s", PC)  
+        dut._log.info(f"_______")
 
     state = dut.rv_multi.ControlUnit.MainFSM.state.value
     next = dut.rv_multi.ControlUnit.MainFSM.nextstate.value
+
     IRWrite = dut.rv_multi.IRWrite.value
     dut._log.info("IRWrite: %s", IRWrite)
+
     instr_val = int(dut.rv_multi.DP.Instr.value)
     dut._log.info("First instruction fetched: 0x%08x", instr_val)
+
     PC = dut.rv_multi.DP.PC.value
     dut._log.info("PC: %s", PC)  
+
     opcode = dut.rv_multi.opcode.value
     funct3 = dut.rv_multi.funct3.value
-    dut._log.info("Instr raw bits (hex): %s", dut.ReadData.value)
-    dut._log.info("instr: 0x%08x", instr_val)
+
     dut._log.info("opcode: %s", opcode)   
     dut._log.info("funct3: %s", funct3)
 
+    dut._log.info("Instr raw bits (hex): %s", dut.ReadData.value)
+    
     # Check if the first instruction is correct
     assert instr_val == expected_instr1, f"Expected Instr to be {expected_instr1:#010x}, got {instr_val:#010x}"
 
@@ -180,21 +192,28 @@ async def test_instruction_sequence(dut):
         next = dut.rv_multi.ControlUnit.MainFSM.nextstate.value
         dut._log.info("state: %s", state)
         dut._log.info("next: %s", next)
+
+        dut._log.info("Instr raw bits (hex): %s", dut.ReadData.value)
+
         IRWrite = dut.rv_multi.IRWrite.value
         dut._log.info("IRWrite: %s", IRWrite)
+
         PC = dut.rv_multi.DP.PC.value
         dut._log.info("PC: %s", PC)  
+
         x1_val = int(dut.rv_multi.DP.rf.registers_debug[1].value)  # Again assuming x1 is in register 1
         dut._log.info(f"Value of x1 during ADDI: 0x{x1_val:08x}")
+
         opcode = dut.rv_multi.opcode.value
         funct3 = dut.rv_multi.funct3.value
         dut._log.info("opcode: %s", opcode)   
         dut._log.info("funct3: %s", funct3)
-        dut._log.info(f"_______")
-    
 
-    instr_val = int(dut.rv_multi.DP.Instr.value)
-    dut._log.info("Second instruction fetched: 0x%08x", instr_val)
+        instr_val = int(dut.rv_multi.DP.Instr.value)
+        dut._log.info("Second instruction fetched: 0x%08x", instr_val)
+
+        dut._log.info(f"_______")
+        
 
     # Check if the second instruction is correct
     assert instr_val == expected_instr2, f"Expected Instr to be {expected_instr2:#010x}, got {instr_val:#010x}"
