@@ -22,10 +22,22 @@ import os
 # ]
 
 instruction_log = [
-    "lui x1, 0xFEDCC         # pc = 0x00, x1 = 0xFEDCC000",
-    "addi x1, x1, 0xA98      # pc = 0x04, x1 = 0xFEDCBA98",
-    "sw x1, 0(x0)",
-    "lw x2, 0(x0)",
+    "lui   x1, 0xFEDCC",        # pc = 0x00, x1 = 0xFEDCC000
+    "addi  x1, x1, 0xA98",      # pc = 0x04, x1 = 0xFEDCBA98
+    "srli  x2, x1, 4",          # pc = 0x08, x2 = 0x0FEDCBA9
+    "srai  x3, x1, 4",          # pc = 0x0C, x3 = 0xFFEDCBA9
+    "xori  x4, x3, -1",         # pc = 0x10, x4 = 0x00123456
+    "addi  x5, x0, 2",          # pc = 0x14, x5 = 0x00000002
+    "add   x6, x5, x4",         # pc = 0x18, x6 = 0x00123458
+    "sub   x7, x6, x4",         # pc = 0x1C, x7 = 0x00000002
+    "sll   x8, x4, x5",         # pc = 0x20, x8 = 0x0048D158
+    "ori   x9, x8, 7",          # pc = 0x24, x9 = 0x0048D15F
+    "auipc x10, 0x12345",       # pc = 0x28, x10 = 0x12345028
+    "beq   x5, x7, S1",         # should skip next ADDI
+    "addi  x5, x5, 5",          # skipped, x5 remains 2
+    "S1:   addi x11, x0, 80",   # pc = 0x30, x11 = 80
+    "sw    x4, 0(x11)",         # pc = 0x34, Mem[80] = x4
+    "lw    x12, 0(x11)"         # pc = 0x38, x12 = Mem[80]
 ]
 
 async def debug_info(dut):
@@ -40,14 +52,24 @@ async def debug_info(dut):
     next = dut.rv_multi.ControlUnit.MainFSM.nextstate.value
     opcode = dut.rv_multi.opcode.value
 
-    dut._log.info("readdata: 0x%X", int(readdata))
+    cocotb.log.info("---------------------------------------------------")
     cocotb.log.info(f"PC: {int(pc):08x}, oldPC: {int(oldPC):08x}, Instr: {int(instr):08x}")
-    # dut._log.info("memwrite: %s", memwrite)
-    # dut._log.info("writedata: 0x%X", int(writedata))
-    dut._log.info("adr: 0x%X", int(adr))
     cocotb.log.info("state: %d", int(state))
     cocotb.log.info("next: %d", int(next))
     cocotb.log.info("opcode: %s", opcode)
+    cocotb.log.info("---------")
+    dut._log.info("readdata: 0x%X", int(readdata))
+    cocotb.log.info("memwrite: %s", memwrite)
+    cocotb.log.info("writedata: 0x%X", int(writedata))
+    dut._log.info("adr: 0x%X", int(adr))
+
+    await Timer(5, "ns")
+    cocotb.log.info("----------------------------")
+    dut._log.info("readdata: 0x%X", int(readdata))
+    cocotb.log.info("memwrite: %s", memwrite)
+    cocotb.log.info("writedata: 0x%X", int(writedata))
+    dut._log.info("adr: 0x%X", int(adr))
+    
 
 @cocotb.test()
 async def dump_registers_test(dut):
